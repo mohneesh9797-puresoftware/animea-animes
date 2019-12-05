@@ -1,84 +1,83 @@
-let express = require('express')
-let router = express.Router()
-let CustomerModel = require('../models/customer.model')
+const express = require('express');
+const router = express.Router();
+const CustomerModel = require('../models/customer.model');
 
 // Create a new customer
 // POST localhost:3000/customer
 router.post('/customer', (req, res) => {
-    if (!req.body) {
-        return res.status(400).send('Request body is missing');
-    }
+  if (!req.body) {
+    return res.status(400).send('Request body is missing');
+  }
 
-    let model = new CustomerModel(req.body);
-    model.save()
-        .then(doc => {
-            if (!doc || doc.length === 0) {
-                return res.status(500).send(doc);
-            }
+  const model = new CustomerModel(req.body);
+  model.save()
+      .then((doc) => {
+        if (!doc || doc.length === 0) {
+          return res.status(500).send(doc);
+        }
 
-            res.status(201).send(doc);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        });
-
-})
+        res.status(201).send(doc);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+});
 
 // Gets a customer
 // GET localhost:3000/customer
 router.get('/customer', (req, res) => {
-    if (!req.query.email) {
-        return res.status(400).send('Missing URL parameter: email')
-    }
+  if (!req.query.email) {
+    return res.status(400).send('Missing URL parameter: email');
+  }
 
-    CustomerModel.findOne({
-        email: req.query.email
-    })
-        .then(doc => {
-            res.json(doc);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        });
-})
+  CustomerModel.findOne({
+    email: req.query.email,
+  })
+      .then((doc) => {
+        res.json(doc);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+});
 
 
 // Updates a customer
 // PUT localhost:3000/customer
 router.put('/customer', (req, res) => {
-    if (!req.query.email) {
-        return res.status(400).send('Missing URL parameter: email')
-    }
+  if (!req.query.email) {
+    return res.status(400).send('Missing URL parameter: email');
+  }
 
-    CustomerModel.findOneAndUpdate({
-        email: req.query.email
-    }, req.body, {
-        new: true
-    })
-    .then(doc => {
-            res.json(doc);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        });
-})
+  CustomerModel.findOneAndUpdate({
+    email: req.query.email,
+  }, req.body, {
+    new: true,
+  })
+      .then((doc) => {
+        res.json(doc);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+});
 
 // Deletes a customer
 // DELETE localhost:3000/customer
 router.delete('/customer', (req, res) => {
-    if (!req.query.email) {
-        return res.status(400).send('Missing URL parameter: email')
-    }
+  if (!req.query.email) {
+    return res.status(400).send('Missing URL parameter: email');
+  }
 
-    CustomerModel.findOneAndRemove({
-        email: req.query.email
-    })
-    .then(doc => {
-            res.json(doc);
-        })
-        .catch(err => {
-            res.status(500).json(err);
-        });
-})
+  CustomerModel.findOneAndRemove({
+    email: req.query.email,
+  })
+      .then((doc) => {
+        res.json(doc);
+      })
+      .catch((err) => {
+        res.status(500).json(err);
+      });
+});
 
-module.exports = router
+module.exports = router;

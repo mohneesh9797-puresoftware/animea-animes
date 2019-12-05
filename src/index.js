@@ -1,43 +1,46 @@
-let express = require('express')
+const express = require('express');
 
-let app = express()
-let personRoute = require('./routes/person')
-let customerRoute = require('./routes/customer')
-let animeRoute = require('./routes/anime')
-let path = require('path')
-let bodyParser = require('body-parser')
-let mongoose = require('mongoose')
-let database = require('../db')
+const app = express();
+const personRoute = require('./routes/person');
+const customerRoute = require('./routes/customer');
+const animeRoute = require('./routes/anime');
+const path = require('path');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const database = require('../db');
+const dotenv = require('dotenv');
 
+// database.connect()
 
-//database.connect()
+app.use(bodyParser.json());
 
-app.use(bodyParser.json())
+dotenv.config();
+
 
 // Middleware to show logs of every call
 app.use((req, res, next) => {
-    console.log(`${new Date().toString()} => ${req.originalUrl}`, req.body);
-    next();
-})
+  console.log(`${new Date().toString()} => ${req.originalUrl}`, req.body);
+  next();
+});
 
 // This includes person routes
-app.use(personRoute)
-app.use(customerRoute)
-app.use(animeRoute)
+app.use(personRoute);
+app.use(customerRoute);
+app.use(animeRoute);
 
-app.use(express.static('public'))
+app.use(express.static('public'));
 
 // Handler for 404 - Resource not found
 app.use((req, res, next) => {
-    res.status(404).send('We think you are lost!');
-})
+  res.status(404).send('We think you are lost!');
+});
 
 // Handler for error 500
 app.use((err, req, res, next) => {
-    console.error(err.stack);
+  console.error(err.stack);
 
-    res.sendFile(path.join(__dirname, '../public/500.html'));
-})
+  res.sendFile(path.join(__dirname, '../public/500.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 
