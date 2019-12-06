@@ -1,16 +1,13 @@
 const express = require('express');
 
 const app = express();
-const personRoute = require('./routes/person');
-const customerRoute = require('./routes/customer');
 const animeRoute = require('./routes/anime');
 const path = require('path');
 const bodyParser = require('body-parser');
-const mongoose = require('mongoose');
 const database = require('../db');
 const dotenv = require('dotenv');
 
-// database.connect()
+database.connect();
 
 app.use(bodyParser.json());
 
@@ -24,8 +21,6 @@ app.use((req, res, next) => {
 });
 
 // This includes person routes
-app.use(personRoute);
-app.use(customerRoute);
 app.use(animeRoute);
 
 app.use(express.static('public'));

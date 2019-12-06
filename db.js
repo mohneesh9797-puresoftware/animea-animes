@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const SERVER = 'elongo-bd-adlff.mongodb.net';
-const DATABASE = 'test';
-const USER = 'db_admin';
-const PASSWORD = '1MUJ9nwbZw5GwnqK';
+const SERVER = 'animea-animes-5gkx1.mongodb.net';
+const DATABASE = 'animea-animes';
+const USER = 'animea';
+const PASSWORD = 'animea';
 const OPTIONS = 'retryWrites=true&w=majority';
 
 function connect() {
