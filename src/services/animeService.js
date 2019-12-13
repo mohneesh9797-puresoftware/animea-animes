@@ -57,6 +57,34 @@ class AnimeService {
           });
     });
   }
+
+  static deleteUserAnimeById(animeId) {
+    return new Promise(function(resolve, reject) {
+      AnimeModel.remove({
+        anime_id: animeId
+      }, function(err, docs) {
+        resolve();
+      });
+    });
+  }
+
+  static postUserNewAnime(anime) {
+    return new Promise(function(resolve, reject) {
+      AnimeModel.create(anime, function() {
+        resolve();
+      });
+    });
+  }
+
+  static updateUserAnimeById(anime) {
+    return new Promise(function(resolve, reject) {
+      AnimeModel.update({
+        'anime_id': anime.anime_id
+      }, anime, function() {
+        resolve();
+      });
+    });
+  }
 }
 
 module.exports = AnimeService;

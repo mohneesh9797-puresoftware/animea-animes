@@ -39,4 +39,37 @@ router.get('/user/:id/animes', (req, res) => {
   });
 });
 
+router.delete('/user/animes/:id', (req, res) => {
+  animeId = req.params.id;
+  //userId = req.params.id;
+
+  AnimeService.deleteUserAnimeById(animeId).then(function(response) {
+    res.sendStatus(200);
+  }, function(err) {
+    console.log(err);
+  });
+});
+
+router.post('/user/animes', (req, res) => {
+  var anime = req.body;
+
+  AnimeService.postUserNewAnime(anime).then(function(response){
+    res.sendStatus(201);
+  }, function(err) {
+    console.log(err);
+  });
+});
+
+router.put('/user/animes', (req, res) => {
+  var anime = req.body;
+
+  console.log(anime);
+
+  AnimeService.updateUserAnimeById(anime).then(function(response){
+    res.sendStatus(200);
+  }, function(err){
+    console.log(err);
+  });
+});
+
 module.exports = router;
