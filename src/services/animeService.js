@@ -13,7 +13,7 @@ class AnimeService {
         'Content-Type': 'application/vnd.api+json',
       },
     };
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       request.get(options, (err, response, body) => {
         if (err) {
           reject(err);
@@ -33,7 +33,7 @@ class AnimeService {
         'Content-Type': 'application/vnd.api+json',
       },
     };
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       request.get(options, (err, response, body) => {
         if (err) {
           reject(err);
@@ -45,42 +45,49 @@ class AnimeService {
   }
 
   static getUserAnimesById(userId) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       AnimeModel.find({
         user_id: userId,
       })
-          .then((doc) => {
-            resolve(doc);
+        .then((doc) => {
+          var userAnimes = []   
+          for (var i = 0; i < doc.length; i++){
+            var userAnime = doc[i]
+            userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id))
+          }
+          Promise.all(userAnimes).then((response) => {
+            resolve(response.map(x => x.data[0]));
           })
-          .catch((err) => {
-            reject(err);
-          });
+        })
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 
   static deleteUserAnimeById(animeId) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       AnimeModel.remove({
         anime_id: animeId
-      }, function(err, docs) {
+      }, function (err, docs) {
         resolve();
       });
     });
   }
 
   static postUserNewAnime(anime) {
-    return new Promise(function(resolve, reject) {
-      AnimeModel.create(anime, function() {
+    return new Promise(function (resolve, reject) {
+      AnimeModel.create(anime, function () {
         resolve();
       });
     });
   }
 
   static updateUserAnimeById(anime) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
       AnimeModel.update({
         'anime_id': anime.anime_id
-      }, anime, function() {
+      }, anime, function () {
         resolve();
       });
     });

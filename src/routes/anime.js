@@ -28,7 +28,7 @@ router.get('/animes', (req, res) => {
     'text': req.query.text ? req.query.text : '',
   };
 
-  AnimeService.getAnimes(page, filters).then(function(response) {
+  AnimeService.getAnimes(page, filters).then((response) => {
     res.send(response.data);
   }, function(err) {
     console.log(err);
@@ -47,7 +47,7 @@ router.get('/animes', (req, res) => {
 router.get('/animes/:id', (req, res) => {
   animeId = req.params.id;
 
-  AnimeService.getAnimeById(animeId).then(function(response) {
+  AnimeService.getAnimeById(animeId).then((response) =>{
     res.send(response.data);
   }, function(err) {
     console.log(err);
@@ -64,8 +64,7 @@ router.get('/animes/:id', (req, res) => {
 router.get('/user/:id/animes', (req, res) => {
   userId = req.params.id;
 
-  AnimeService.getUserAnimesById(userId).then(function(response) {
-    console.log(response)
+  AnimeService.getUserAnimesById(userId).then((response) => {
     res.json(response);
   }, function(err) {
     console.log(err);
@@ -84,7 +83,7 @@ router.delete('/user/animes/:id', (req, res) => {
   animeId = req.params.id;
   //userId = req.params.id;
 
-  AnimeService.deleteUserAnimeById(animeId).then(function(response) {
+  AnimeService.deleteUserAnimeById(animeId).then((response) => {
     res.sendStatus(200);
   }, function(err) {
     console.log(err);
@@ -101,7 +100,7 @@ router.delete('/user/animes/:id', (req, res) => {
 router.post('/user/animes', (req, res) => {
   var anime = req.body;
 
-  AnimeService.postUserNewAnime(anime).then(function(response){
+  AnimeService.postUserNewAnime(anime).then((response) =>{
     res.sendStatus(201);
   }, function(err) {
     console.log(err);
@@ -118,7 +117,8 @@ router.post('/user/animes', (req, res) => {
 router.put('/user/animes', (req, res) => {
   var anime = req.body;
   console.log(anime);
-  AnimeService.updateUserAnimeById(anime).then(function(response){
+
+  AnimeService.updateUserAnimeById(anime).then((response) =>{
     res.sendStatus(200);
   }, function(err){
     console.log(err);
