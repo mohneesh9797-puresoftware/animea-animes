@@ -56,7 +56,11 @@ class AnimeService {
             userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id))
           }
           Promise.all(userAnimes).then((response) => {
-            resolve(response.map(x => x.data[0]));
+            resolve(response.map((x, index) => {
+              x = x.data[0]
+              x.userData = doc[index]
+              return x;
+            }));
           })
         })
         .catch((err) => {
