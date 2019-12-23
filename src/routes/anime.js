@@ -20,7 +20,7 @@ const router = express.Router();
  * @returns {Error}  default - Unexpected error
  */
 router.get('/animes', (req, res) => {
-  page = req.query.page ? req.query.page : 1;
+  page = req.query.page ? req.query.page : 0;
 
   const filters = {
     'status': req.query.status ? req.query.status : '',
