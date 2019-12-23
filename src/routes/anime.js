@@ -99,6 +99,8 @@ router.delete('/user/animes/:id', (req, res) => {
  */
 router.post('/user/animes', (req, res) => {
   var anime = req.body;
+  anime.status = 'pending';
+  anime.rating = '';
 
   AnimeService.postUserNewAnime(anime).then((response) =>{
     res.sendStatus(201);

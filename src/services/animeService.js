@@ -77,7 +77,10 @@ class AnimeService {
 
   static postUserNewAnime(anime) {
     return new Promise(function (resolve, reject) {
-      AnimeModel.create(anime, function () {
+      AnimeModel.create({
+        'status': anime.status,
+        'rating': anime.rating
+      },anime, function () {
         resolve();
       });
     });
