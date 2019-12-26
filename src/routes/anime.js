@@ -79,11 +79,11 @@ router.get('/user/:id/animes', (req, res) => {
  * @returns {object} 200 - Anime was properly deleted from the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.delete('/user/animes/:id', (req, res) => {
-  animeId = req.params.id;
-  //userId = req.params.id;
+router.delete('/user/:userId/animes/:animeId', (req, res) => {
+  animeId = req.params.animeId;
+  userId = req.params.userId;
 
-  AnimeService.deleteUserAnimeById(animeId).then((response) => {
+  AnimeService.deleteUserAnimeById(animeId, userId).then((response) => {
     res.sendStatus(200);
   }, function(err) {
     console.log(err);

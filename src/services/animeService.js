@@ -69,7 +69,7 @@ class AnimeService {
     });
   }
 
-  static deleteUserAnimeById(animeId) {
+  static deleteUserAnimeById(animeId, userId) {
     return new Promise(function (resolve, reject) {
       AnimeModel.remove({
         anime_id: animeId
