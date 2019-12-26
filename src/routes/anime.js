@@ -97,8 +97,10 @@ router.delete('/user/animes/:id', (req, res) => {
  * @returns {object} 200 - Anime was properly added to the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.post('/user/animes', (req, res) => {
+router.post('/user/:userId/animes/:animeId', (req, res) => {
   var anime = req.body;
+  anime.anime_id = req.params.animeId;
+  anime.user_id = req.params.userId;
   anime.status = 'pending';
   anime.rating = '';
 
