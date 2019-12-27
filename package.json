@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "start-watch": "nodemon src/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "eslint": "./node_modules/.bin/eslint --fix **/**.js"
   },
   "repository": {
@@ -26,8 +26,10 @@
   "homepage": "https://github.com/JuanmiBF/express-test#readme",
   "dependencies": {
     "body-parser": "^1.19.0",
+    "chai": "^4.2.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "mocha": "^6.2.2",
     "mongoose": "^5.7.5"
   },
   "devDependencies": {
@@ -35,6 +37,7 @@
     "eslint-config-google": "^0.14.0",
     "express-swagger-generator": "^1.1.15",
     "nodemon": "^1.19.1",
-    "request": "^2.88.0"
+    "request": "^2.88.0",
+    "supertest": "^4.0.2"
   }
 }
