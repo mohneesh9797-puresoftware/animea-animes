@@ -36,7 +36,6 @@ router.get('/animes', (req, res) => {
 });
 
 
-
 /**
  * @route GET /animes/:id
  * @group Anime - Operations about Anime
@@ -98,7 +97,7 @@ router.delete('/user/:userId/animes/:animeId', (req, res) => {
  * @returns {Error}  default - Unexpected error
  */
 router.post('/user/:userId/animes/:animeId', (req, res) => {
-  var anime = req.body;
+  const anime = req.body;
   anime.anime_id = req.params.animeId;
   anime.user_id = req.params.userId;
   anime.status = 'pending';
@@ -119,12 +118,12 @@ router.post('/user/:userId/animes/:animeId', (req, res) => {
  * @returns {Error}  default - Unexpected error
  */
 router.put('/user/animes', (req, res) => {
-  var anime = req.body;
+  const anime = req.body;
   console.log(anime);
 
   AnimeService.updateUserAnimeById(anime).then((response) =>{
     res.sendStatus(200);
-  }, function(err){
+  }, function(err) {
     console.log(err);
   });
 });

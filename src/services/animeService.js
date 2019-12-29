@@ -13,7 +13,7 @@ class AnimeService {
         'Content-Type': 'application/vnd.api+json',
       },
     };
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       request.get(options, (err, response, body) => {
         if (err) {
           reject(err);
@@ -33,7 +33,7 @@ class AnimeService {
         'Content-Type': 'application/vnd.api+json',
       },
     };
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       request.get(options, (err, response, body) => {
         if (err) {
           reject(err);
@@ -45,57 +45,57 @@ class AnimeService {
   }
 
   static getUserAnimesById(userId) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       AnimeModel.find({
         user_id: userId,
       })
-        .then((doc) => {
-          var userAnimes = []   
-          for (var i = 0; i < doc.length; i++){
-            var userAnime = doc[i]
-            userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id))
-          }
-          Promise.all(userAnimes).then((response) => {
-            resolve(response.map((x, index) => {
-              x = x.data[0]
-              x.userData = doc[index]
-              return x;
-            }));
+          .then((doc) => {
+            const userAnimes = [];
+            for (let i = 0; i < doc.length; i++) {
+              const userAnime = doc[i];
+              userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
+            }
+            Promise.all(userAnimes).then((response) => {
+              resolve(response.map((x, index) => {
+                x = x.data[0];
+                x.userData = doc[index];
+                return x;
+              }));
+            });
           })
-        })
-        .catch((err) => {
-          reject(err);
-        });
+          .catch((err) => {
+            reject(err);
+          });
     });
   }
 
   static deleteUserAnimeById(animeId, userId) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       AnimeModel.remove({
-        anime_id: animeId
-      }, function (err, docs) {
+        anime_id: animeId,
+      }, function(err, docs) {
         resolve();
       });
     });
   }
 
   static postUserNewAnime(anime) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       AnimeModel.create({
         'anime_id': anime.anime_id,
         'status': anime.status,
-        'rating': anime.rating
-      },anime, function () {
+        'rating': anime.rating,
+      }, anime, function() {
         resolve();
       });
     });
   }
 
   static updateUserAnimeById(anime) {
-    return new Promise(function (resolve, reject) {
+    return new Promise(function(resolve, reject) {
       AnimeModel.update({
-        'anime_id': anime.anime_id
-      }, anime, function () {
+        'anime_id': anime.anime_id,
+      }, anime, function() {
         resolve();
       });
     });
