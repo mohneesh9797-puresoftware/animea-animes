@@ -32,7 +32,8 @@
     "express": "^4.17.1",
     "jest": "^24.9.0",
     "mocha": "^6.2.2",
-    "mongoose": "^5.7.5"
+    "mongoose": "^5.7.5",
+    "nock": "^11.7.0"
   },
   "devDependencies": {
     "coveralls": "^3.0.9",
