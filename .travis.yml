@@ -2,5 +2,14 @@ language: node_js
 node_js:
   - 'stable'
 install: npm install
-script: npm test
+jobs:
+  include:
+    - stage: run tests
+      script:
+      - npm test
+    - stage: build docker image
+      script:
+      - docker build -t animea-animes .
+      - docker tag animea-animes $SERVER_IP:$REGISTRY_PORT/animea-animes
+      - docker push $SERVER_IP:$REGISTRY_PORT/animea-animes
 after_success: npm run coverage
