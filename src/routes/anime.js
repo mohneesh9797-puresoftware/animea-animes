@@ -36,7 +36,6 @@ router.get('/animes', (req, res) => {
 });
 
 
-
 /**
  * @route GET /animes/:id
  * @group Anime - Operations about Anime
@@ -79,9 +78,9 @@ router.get('/user/:id/animes', (req, res) => {
  * @returns {object} 200 - Anime was properly deleted from the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.delete('/user/:userId/animes/:animeId', (req, res) => {
+router.delete('/user/animes/:animeId', (req, res) => {
   animeId = req.params.animeId;
-  userId = req.params.userId;
+  userId = 1;
 
   AnimeService.deleteUserAnimeById(animeId, userId).then((response) => {
     res.sendStatus(200);
@@ -97,10 +96,10 @@ router.delete('/user/:userId/animes/:animeId', (req, res) => {
  * @returns {object} 200 - Anime was properly added to the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.post('/user/:userId/animes/:animeId', (req, res) => {
-  var anime = req.body;
+router.post('/user/animes/:animeId', (req, res) => {
+  const anime = req.body;
   anime.anime_id = req.params.animeId;
-  anime.user_id = req.params.userId;
+  anime.user_id = 1;
   anime.status = 'pending';
   anime.rating = '';
 
@@ -115,12 +114,14 @@ router.post('/user/:userId/animes/:animeId', (req, res) => {
  * @route PUT /user/animes/:id
  * @group Anime - Operations about Anime
  * @param {string} anime.query.required - anime to update in the user's list
- * @returns {object} 200 - Anime was properly deleted from the user's list
+ * @returns {object} 200 - Anime was properly updated from the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.put('/user/animes', (req, res) => {
+router.put('/user/animes/:animeId', (req, res) => {
   var anime = req.body;
-  console.log(anime);
+  anime.anime_id = req.params.animeId;
+  anime.status = req.body.status;
+  anime.rating = req.body.rating;
 
   AnimeService.updateUserAnimeById(anime).then((response) =>{
     res.sendStatus(200);
