@@ -1,17 +1,14 @@
-FROM node:10
+FROM arm32v7/node:10-alpine
 
-# Create app directory
-WORKDIR /usr/src/app
-RUN git clone https://github.com/animea-FIS/animea-animes
+WORKDIR /app
 
-WORKDIR animea-animes
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm install
-# If you are building your code for production
-# RUN npm ci --only=production
 
-# Bundle app source
 COPY . .
 
 EXPOSE 3001
-CMD [ "npm", "start" ]
+
+CMD npm start
