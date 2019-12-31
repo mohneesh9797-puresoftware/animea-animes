@@ -120,8 +120,14 @@ router.post('/user/animes/:animeId', (req, res) => {
 router.put('/user/animes/:animeId', (req, res) => {
   var anime = req.body;
   anime.anime_id = req.params.animeId;
-  anime.status = req.body.status;
-  anime.rating = req.body.rating;
+
+  if (req.body.status) {
+    anime.status = req.body.status;
+  }
+
+  if (req.body.rating) {
+    anime.rating = req.body.rating;
+  }
 
   AnimeService.updateUserAnimeById(anime).then((response) =>{
     res.sendStatus(200);
