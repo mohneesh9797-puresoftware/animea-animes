@@ -16,4 +16,7 @@ jobs:
       - docker build -t animea-animes .
       - docker tag animea-animes animea/animea-animes:latest
       - docker push animea/animea-animes:latest
+    - stage: update services in server
+      script:
+      - wget http://$SERVER_IP:$API_PORT/update
 after_success: npm run coverage
