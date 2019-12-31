@@ -3,6 +3,8 @@ arch:
 language: node_js
 node_js:
   - 'stable'
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 install: npm install
 jobs:
   include:
@@ -12,6 +14,6 @@ jobs:
     - stage: build docker image
       script:
       - docker build -t animea-animes .
-      - docker tag animea-animes $SERVER_IP:$REGISTRY_PORT/animea-animes
-      - docker push $SERVER_IP:$REGISTRY_PORT/animea-animes
+      - docker tag animea-animes animea/animea-animes:latest
+      - docker push animea/animea-animes:latest
 after_success: npm run coverage
