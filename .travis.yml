@@ -18,5 +18,5 @@ jobs:
       - docker push animea/animea-animes:latest
     - stage: update services in server
       script:
-      - wget http://$SERVER_IP:$API_PORT/update
+      - curl http://$SERVER_IP:$API_PORT/update
 after_success: npm run coverage
