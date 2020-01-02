@@ -1,1 +1,1 @@
-# Express test
+[![Coverage Status](https://coveralls.io/repos/github/animea-FIS/animea-animes/badge.svg?branch=develop)](https://coveralls.io/github/animea-FIS/animea-animes?branch=develop)
