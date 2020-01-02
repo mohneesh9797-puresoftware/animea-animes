@@ -66,3 +66,35 @@ describe("Get anime by wrong filter", () => {
             .expect(200, done);
     });
 });
+
+describe("POST /anime", () => {
+    const anime = {user_id: '1', rating: '2', status: 'pending'}
+
+    it('Should add a new anime to users list', (done) => {
+        return request(app).post('/user/animes/7442').send(anime).then((response) => {
+            expect(response.statusCode).to.be.equal(201);
+            expect(response.body).to.have.length(10);
+        }).expect(201, done());
+    });
+});
+
+describe("PUT /anime", () => {
+    const anime = {user_id: '1', rating: '4', status: 'watching'}
+
+    it('Should update an users anime', (done) => {
+        return request(app).put('/user/animes/7442').send(anime).then((response) => {
+            expect(response.statusCode).to.be.equal(200);
+            expect(response.body).to.have.length(10);
+        }).expect(200, done());
+    })
+})
+
+describe("DELETE /anime", () => {
+
+    it('Should delete an anime from user list', (done) => {
+        return request(app).delete('/user/animes/7442').expect(response => {
+            expect(response.statusCode).to.be.equal(200)
+            console.log("HOLA")
+        }).expect(200, done());
+    });
+});
