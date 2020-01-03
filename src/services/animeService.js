@@ -85,7 +85,7 @@ class AnimeService {
         'anime_id': anime.anime_id,
         'status': anime.status,
         'rating': anime.rating,
-      }, anime, function() {
+      }, function() {
         resolve();
       });
     });

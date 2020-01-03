@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/index.js",
     "start-watch": "nodemon src/index.js",
-    "test": "mocha",
+    "test": "jest --runInBand",
     "eslint": "./node_modules/.bin/eslint --fix **/**.js",
     "coverage": "jest --coverage && cat ./coverage/lcov.info | coveralls"
   },

@@ -13,7 +13,6 @@ module.exports = {
     if (filters.genres) {
       apiUrl += `&filter[genres]=${filters.genres}`;
     }
-    console.log(apiUrl);
     return apiUrl;
   },
 };
