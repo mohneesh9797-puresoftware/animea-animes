@@ -7,11 +7,12 @@ install: npm install
 jobs:
   include:
     - stage: run tests
-      arch: arm64
+      arch: amd64
       script:
       - npm test
     - stage: build docker image
-      if: branch = master
+      # if: branch = master
+      arch: arm64
       script:
       - docker build -t animea-animes .
       - docker tag animea-animes animea/animea-animes:latest
