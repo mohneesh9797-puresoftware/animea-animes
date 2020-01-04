@@ -5,7 +5,10 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 const expressSwagger = require('express-swagger-generator')(app);
+let cors = require('cors');
 
+// CORS
+app.use(cors());
 
 // Swagger configuration
 let options = {

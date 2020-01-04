@@ -1,6 +1,5 @@
 const database = require('../db');
 const server = require("./server.js")
-
 // Database connection
 database.connect();
 
