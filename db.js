@@ -13,7 +13,7 @@ function connect() {
   console.log(PASSWORD)
   console.log(DATABASE)
   console.log(SERVER)
-  mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`);
+  mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`, { useNewUrlParser: true });
 }
 
 module.exports.connect = connect;
