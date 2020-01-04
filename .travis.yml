@@ -11,14 +11,14 @@ jobs:
       script:
       - npm test
     - stage: build docker image
-      if: branch = master
+      if: branch = develop
       arch: arm64
       script:
       - docker build -t animea-animes .
       - docker tag animea-animes animea/animea-animes:latest
       - docker push animea/animea-animes:latest
     - stage: update services in server
-      if: branch = master
+      if: branch = develop
       arch: amd64
       script:
       - curl http://$SERVER_IP:$API_PORT/update
