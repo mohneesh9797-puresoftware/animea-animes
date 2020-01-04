@@ -29,7 +29,7 @@ class AnimeService {
         });
       } else {
         console.log("Using cache...")
-        resolve(cache.get(options.url));
+        resolve(cachedBody);
       }
     });
   }
@@ -45,7 +45,7 @@ class AnimeService {
     };
     var cachedBody = cache.get(options.url);
     return new Promise(function (resolve, reject) {
-      if (!cachedBody){
+      if (!cachedBody) {
         request.get(options, (err, response, body) => {
           if (err) {
             reject(err);
@@ -57,33 +57,33 @@ class AnimeService {
         });
       } else {
         console.log("Using cache...")
-        resolve(cache.get(options.url));
+        resolve(cachedBody);
       }
     });
   }
 
   static getUserAnimesById(userId) {
     return new Promise(function (resolve, reject) {
-      AnimeModel.find({
-        user_id: userId,
-      })
-        .then((doc) => {
-          const userAnimes = [];
-          for (let i = 0; i < doc.length; i++) {
-            const userAnime = doc[i];
-            userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
-          }
-          Promise.all(userAnimes).then((response) => {
-            resolve(response.map((x, index) => {
-              x = x.data[0];
-              x.userData = doc[index];
-              return x;
-            }));
-          });
+        AnimeModel.find({
+          user_id: userId,
         })
-        .catch((err) => {
-          reject(err);
-        });
+          .then((doc) => {
+            const userAnimes = [];
+            for (let i = 0; i < doc.length; i++) {
+              const userAnime = doc[i];
+              userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
+            }
+            Promise.all(userAnimes).then((response) => {
+              resolve(response.map((x, index) => {
+                x = x.data[0];
+                x.userData = doc[index];
+                return x;
+              }));
+            });
+          })
+          .catch((err) => {
+            reject(err);
+          });
     });
   }
 

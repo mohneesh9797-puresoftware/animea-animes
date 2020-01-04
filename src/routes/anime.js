@@ -1,6 +1,7 @@
 const AnimeService = require('../services/animeService.js');
 const express = require('express');
 const router = express.Router();
+const cache = require('memory-cache');
 
 /**
  * @typedef Anime
@@ -62,12 +63,20 @@ router.get('/animes/:id', (req, res) => {
  */
 router.get('/user/:id/animes', (req, res) => {
   userId = req.params.id;
+  cacheKey = `getUserAnimesById:${userId}`
+  cachedBody = cache.get(cacheKey);
 
-  AnimeService.getUserAnimesById(userId).then((response) => {
-    res.json(response);
-  }, function(err) {
-    console.log(err);
-  });
+  if (!cachedBody) {
+    AnimeService.getUserAnimesById(userId).then((response) => {
+      cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
+      res.json(response);
+    }, function (err) {
+      console.log(err);
+    });
+  } else {
+    console.log("Using cache...")
+    res.json(cachedBody);
+  }
 });
 
 
