@@ -1,4 +1,4 @@
-const Anime = require('../src/models/anime.model');
+const AnimeTest = require('../src/models/anime-test.model');
 const mongoose = require('mongoose');
 const db = require('../db');
 
@@ -8,10 +8,10 @@ describe('Animes DB connection', () => {
     })
 
     it('inserts an anime in the user list in db', (done) => {
-        const anime = new Anime({anime_id: 7442, user_id: '1', rating: 2, status: 'pending'});
+        const anime = new AnimeTest({anime_id: 7442, user_id: '1', rating: 2, status: 'pending'});
         anime.save((err, anime) => {
             expect(err).toBeNull();
-            Anime.find({}, (err, animes) => {
+            AnimeTest.find({}, (err, animes) => {
                 expect(animes.length).toEqual(1);
                 done();
             });
@@ -21,8 +21,8 @@ describe('Animes DB connection', () => {
     it('updates an anime in the user list in db', (done) => {
         const userAnimeIds = {anime_id: 7442, user_id: 1};
         const updatedAnime = {rating: 4, status: 'finished'};
-        Anime.findOneAndUpdate(userAnimeIds, updatedAnime, function () {
-            Anime.find({}, (err, animes) => {
+        AnimeTest.findOneAndUpdate(userAnimeIds, updatedAnime, function () {
+            AnimeTest.find({}, (err, animes) => {
                 expect(animes.length).toEqual(1);
                 expect(animes[0].rating).toEqual(4);
                 expect(animes[0].status).toEqual('finished');
@@ -34,9 +34,9 @@ describe('Animes DB connection', () => {
 
     it('deletes an anime from the user list in db', (done) => {
         const anime = {anime_id: 7442, user_id: 1};
-        Anime.findOneAndRemove(anime, (err) => {
+        AnimeTest.findOneAndRemove(anime, (err) => {
             expect(err).toBeNull();
-            Anime.find({}, (err, animes) => {
+            AnimeTest.find({}, (err, animes) => {
                 expect(animes.length).toEqual(0);
                 done();
             });
@@ -44,7 +44,9 @@ describe('Animes DB connection', () => {
     });
 
     afterAll((done) => {
-        mongoose.connection.close(done);
+        mongoose.connection.db.dropCollection('animes-test', () => {
+            mongoose.connection.close(done);
+        });
     });
 
 })

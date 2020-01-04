@@ -1,4 +1,6 @@
+const dotenv = require('dotenv');
 const mongoose = require('mongoose');
+dotenv.config();
 
 const SERVER = process.env.SERVER;
 const DATABASE = process.env.DATABASE;

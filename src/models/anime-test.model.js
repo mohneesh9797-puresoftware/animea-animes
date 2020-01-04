@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const AnimeSchema = new mongoose.Schema({
+const AnimeTestSchema = new mongoose.Schema({
   status: String,
   anime_id: {
     type: Number,
@@ -17,6 +17,6 @@ const AnimeSchema = new mongoose.Schema({
     required: false,
     unique: false,
   },
-}, { collection : 'animes' });
+}, { collection : 'animes-test' });
 
-module.exports = mongoose.model('Anime', AnimeSchema);
+module.exports = mongoose.model('AnimeTest', AnimeTestSchema);
