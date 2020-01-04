@@ -10,9 +10,4 @@ function connect() {
   mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`);
 }
 
-function connectTestDb(){
-  mongoose.connect('mongodb://mongo/test');
-}
-
 module.exports.connect = connect;
-module.exports.connectTestDb = connectTestDb;
