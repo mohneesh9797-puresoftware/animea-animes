@@ -83,15 +83,15 @@ describe("POST /anime", () => {
 });
 
 describe("PUT /anime", () => {
-    const animeId = {anime_id: 7442}
+    const userAnimeIds = {user_id:'1', anime_id: 7442}
     const updatedAnime = new Anime({user_id: '1', rating: '4', status: 'pending'});
     let dbUpdate;
     beforeEach(() => {
-        dbUpdate = jest.spyOn(Anime, "update");
+        dbUpdate = jest.spyOn(Anime, "findOneAndUpdate");
     });
 
     it('Should add a new anime to user list', () => {
-        dbUpdate.mockImplementation((animeId, updatedAnime, callback) => {
+        dbUpdate.mockImplementation((userAnimeIds, updatedAnime, callback) => {
             callback(false);
         });
         return request(app).put(BASE_API_PATH + '/user/animes/7442').send(updatedAnime).then((response) => {
@@ -102,14 +102,14 @@ describe("PUT /anime", () => {
 });
 
 describe("DELETE /anime", () => {
-    const animeId = {anime_id: 7442, user_id: 1}
+    const userAnimeIds = {user_id:'1', anime_id: 7442}
     let dbDelete;
     beforeEach(() => {
-        dbDelete = jest.spyOn(Anime, "remove");
+        dbDelete = jest.spyOn(Anime, "findOneAndDelete");
     });
 
     it('Should add a new anime to user list', () => {
-        dbDelete.mockImplementation((animeId, callback) => {
+        dbDelete.mockImplementation((userAnimeIds, callback) => {
             callback(false);
         });
         return request(app).delete(BASE_API_PATH + '/user/animes/7442').send(animeId).then((response) => {

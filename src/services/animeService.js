@@ -89,8 +89,9 @@ class AnimeService {
 
   static deleteUserAnimeById(animeId, userId) {
     return new Promise(function (resolve, reject) {
-      AnimeModel.remove({
+      AnimeModel.findOneAndDelete({
         anime_id: animeId,
+        user_id: userId
       }, function (err, docs) {
         resolve();
       });
@@ -111,8 +112,9 @@ class AnimeService {
 
   static updateUserAnimeById(anime) {
     return new Promise(function (resolve, reject) {
-      AnimeModel.update({
-        'anime_id': anime.anime_id,
+      AnimeModel.findOneAndUpdate({
+        anime_id: anime.anime_id,
+        user_id: anime.user_id
       }, anime, function () {
         resolve();
       });
