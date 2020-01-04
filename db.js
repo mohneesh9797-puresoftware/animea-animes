@@ -1,13 +1,18 @@
 const mongoose = require('mongoose');
 
-const SERVER = 'animea-animes-5gkx1.mongodb.net';
-const DATABASE = 'animea-animes';
-const USER = 'animea';
-const PASSWORD = 'animea';
-const OPTIONS = 'retryWrites=true&w=majority';
+const SERVER = process.env.SERVER;
+const DATABASE = process.env.DATABASE;
+const USER = process.env.USER;
+const PASSWORD = process.env.PASSWORD;
+const OPTIONS = process.env.OPTIONS;
 
 function connect() {
   mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`);
 }
 
+function connectTestDb(){
+  mongoose.connect('mongodb://mongo/test');
+}
+
 module.exports.connect = connect;
+module.exports.connectTestDb = connectTestDb;
