@@ -3,6 +3,7 @@ const Anime = require('../src/models/anime.model');
 const app = require('../src/server');
 const nock = require('nock');
 const kitsuResponses = require('./kitsuResponses');
+var BASE_API_PATH = "/api/v1";
 
 beforeEach(() => {
     nock('https://kitsu.io')
@@ -17,7 +18,7 @@ beforeEach(() => {
 describe("Get all animes", () => {
     it('Should return a list of 10 animes', (done) => {
         request(app)
-            .get('/animes')
+            .get(BASE_API_PATH + '/animes')
             .expect(response => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body.length).toEqual(10)
@@ -29,7 +30,7 @@ describe("Get all animes", () => {
 describe("Get anime by id", () => {
     it('Should return Cardcaptor Sakura anime', (done) => {
         request(app)
-            .get('/animes/207')
+            .get(BASE_API_PATH + '/animes/207')
             .expect(response => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body[0].attributes.titles.en).toBe("Cardcaptor Sakura")
@@ -41,7 +42,7 @@ describe("Get anime by id", () => {
 describe("Get anime by genre", () => {
     it('Should return only animes with school genre', (done) => {
         request(app)
-            .get('/animes?genres=school')
+            .get(BASE_API_PATH + '/animes?genres=school')
             .expect(response => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body[0].attributes.titles.en).toBe("My Hero Academia")
@@ -54,7 +55,7 @@ describe("Get anime by genre", () => {
 describe("Get anime by wrong filter", () => {
     it('Should return a list of 10 animes unfiltered', (done) => {
         request(app)
-            .get('/animes?wrongFilter=wrongFilterValue')
+            .get(BASE_API_PATH + '/animes?wrongFilter=wrongFilterValue')
             .expect(response => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body.length).toEqual(10)
@@ -74,7 +75,7 @@ describe("POST /anime", () => {
         dbInsert.mockImplementation((anime, callback) => {
             callback(false);
         });
-        return request(app).post('/user/animes/7442').send(anime).then((response) => {
+        return request(app).post(BASE_API_PATH + '/user/animes/7442').send(anime).then((response) => {
             expect(response.statusCode).toBe(201);
             // expect(response).toBeCalledWith(objectToInsert, expect.any(Function));
         });
@@ -93,7 +94,7 @@ describe("PUT /anime", () => {
         dbUpdate.mockImplementation((animeId, updatedAnime, callback) => {
             callback(false);
         });
-        return request(app).put('/user/animes/7442').send(updatedAnime).then((response) => {
+        return request(app).put(BASE_API_PATH + '/user/animes/7442').send(updatedAnime).then((response) => {
             expect(response.statusCode).toBe(200);
             // expect(response).toBeCalledWith(objectToInsert, expect.any(Function));
         });
@@ -111,7 +112,7 @@ describe("DELETE /anime", () => {
         dbDelete.mockImplementation((animeId, callback) => {
             callback(false);
         });
-        return request(app).delete('/user/animes/7442').send(animeId).then((response) => {
+        return request(app).delete(BASE_API_PATH + '/user/animes/7442').send(animeId).then((response) => {
             expect(response.statusCode).toBe(200);
             // expect(response).toBeCalledWith(objectToInsert, expect.any(Function));
         });
