@@ -68,17 +68,16 @@ router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
   cacheKey = `getUserAnimesById:${userId}`
   cachedBody = cache.get(cacheKey);
 
-  if (!cachedBody) {
-    AnimeService.getUserAnimesById(userId).then((response) => {
-      cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
-      res.json(response);
-    }, function (err) {
-      console.log(err);
-    });
-  } else {
-    console.log("Using cache...")
-    res.json(cachedBody);
-  }
+  AnimeService.getUserAnimesById(userId).then((response) => {
+    cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
+    res.json(response);
+  }, function (err) {
+    console.log(err);
+    if (cachedBody) {
+      console.log("Using cache...")
+      res.json(cachedBody);
+    }
+  });
 });
 
 
