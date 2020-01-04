@@ -26,7 +26,6 @@ describe('Animes DB connection', () => {
                 expect(animes.length).toEqual(1);
                 expect(animes[0].rating).toEqual(4);
                 expect(animes[0].status).toEqual('finished');
-                console.log(animes)
                 done();
           });
         });
