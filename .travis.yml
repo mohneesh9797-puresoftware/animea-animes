@@ -13,6 +13,7 @@ jobs:
     - stage: build docker image
       if: branch = develop
       arch: arm64
+      language: bash
       script:
       - docker build -t animea-animes .
       - docker tag animea-animes animea/animea-animes:latest
