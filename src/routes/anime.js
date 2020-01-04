@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
 
+var BASE_API_PATH = "/api/v1";
+
 /**
  * @typedef Anime
  * @property {integer} anime_id.required - Identifier of the anime
@@ -20,7 +22,7 @@ const cache = require('memory-cache');
  * @returns {object} 200 - An array with the searched animes
  * @returns {Error}  default - Unexpected error
  */
-router.get('/animes', (req, res) => {
+router.get(BASE_API_PATH + '/animes', (req, res) => {
   page = req.query.page ? req.query.page : 0;
 
   const filters = {
@@ -44,7 +46,7 @@ router.get('/animes', (req, res) => {
  * @returns {object} 200 - JSON object with information about the searched anime
  * @returns {Error}  default - Unexpected error
  */
-router.get('/animes/:id', (req, res) => {
+router.get(BASE_API_PATH + '/animes/:id', (req, res) => {
   animeId = req.params.id;
 
   AnimeService.getAnimeById(animeId).then((response) =>{
@@ -61,7 +63,7 @@ router.get('/animes/:id', (req, res) => {
  * @returns {object} 200 - An array with the animes that the user has in his list
  * @returns {Error}  default - Unexpected error
  */
-router.get('/user/:id/animes', (req, res) => {
+router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
   userId = req.params.id;
   cacheKey = `getUserAnimesById:${userId}`
   cachedBody = cache.get(cacheKey);
@@ -87,7 +89,7 @@ router.get('/user/:id/animes', (req, res) => {
  * @returns {object} 200 - Anime was properly deleted from the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.delete('/user/animes/:animeId', (req, res) => {
+router.delete(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   animeId = req.params.animeId;
   userId = 1;
 
@@ -105,7 +107,7 @@ router.delete('/user/animes/:animeId', (req, res) => {
  * @returns {object} 200 - Anime was properly added to the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.post('/user/animes/:animeId', (req, res) => {
+router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   const anime = req.body;
   anime.anime_id = req.params.animeId;
   anime.user_id = 1;
@@ -126,7 +128,7 @@ router.post('/user/animes/:animeId', (req, res) => {
  * @returns {object} 200 - Anime was properly updated from the user's list
  * @returns {Error}  default - Unexpected error
  */
-router.put('/user/animes/:animeId', (req, res) => {
+router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   var anime = req.body;
   anime.anime_id = req.params.animeId;
 
