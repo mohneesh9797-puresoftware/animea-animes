@@ -1,0 +1,27 @@
+before_install:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+jobs:
+  include:
+    - stage: run tests
+      arch: amd64
+      language: node_js
+      node_js:
+      - 'stable'
+      install: npm install
+      script:
+      - npm test
+    - stage: build docker image
+      if: branch = master
+      arch: arm64
+      language: bash
+      script:
+      - docker build -t animea-animes .
+      - docker tag animea-animes animea/animea-animes:latest
+      - docker push animea/animea-animes:latest
+    - stage: update services in server
+      if: branch = master
+      arch: amd64
+      language: bash
+      script:
+      - curl http://$SERVER_IP:$API_PORT/update
+after_success: npm run coverage

@@ -1,13 +1,15 @@
-let mongoose = require('mongoose')
+const dotenv = require('dotenv');
+const mongoose = require('mongoose');
+dotenv.config();
 
-const SERVER = 'elongo-bd-adlff.mongodb.net';
-const DATABASE = 'test';
-const USER = 'db_admin';
-const PASSWORD = '1MUJ9nwbZw5GwnqK';
-const OPTIONS = 'retryWrites=true&w=majority';
+const SERVER = process.env.SERVER;
+const DATABASE = process.env.DATABASE;
+const USER = process.env.USER;
+const PASSWORD = process.env.PASSWORD;
+const OPTIONS = process.env.OPTIONS;
 
 function connect() {
-    mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`);
+  mongoose.connect(`mongodb+srv://${USER}:${PASSWORD}@${SERVER}/${DATABASE}?${OPTIONS}`, { useNewUrlParser: true });
 }
 
 module.exports.connect = connect;
