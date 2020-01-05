@@ -61,6 +61,7 @@ router.get(BASE_API_PATH + '/animes/:id', (req, res) => {
  * @group Anime - Operations about Anime
  * @param {string} id.query.required - identifier of the user
  * @returns {object} 200 - An array with the animes that the user has in his list
+ * @returns {object} 401 - Invalid token
  * @returns {Error}  default - Unexpected error
  */
 router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
@@ -92,11 +93,13 @@ router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
  * @group Anime - Operations about Anime
  * @param {string} id.query.required - identifier of the anime
  * @returns {object} 200 - Anime was properly deleted from the user's list
+ * @returns {object} 404 - There's no user with that anime in database
+ * @returns {object} 401 - Invalid token
  * @returns {Error}  default - Unexpected error
  */
 router.delete(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   animeId = req.params.animeId;
-  userId = 1;
+  userId = req.body.user_id;
   userToken = req.header('x-access-token')
 
 
@@ -108,6 +111,10 @@ router.delete(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
       res.status(401).json({
         error: 'Unauthorized. Authentication failed.'
     })
+    } else if (err == 404) {
+      res.status(404).json({
+        error: 'The resource doesn\'t exists.'
+    })
     }
   });
 });
@@ -117,12 +124,13 @@ router.delete(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
  * @group Anime - Operations about Anime
  * @param {string} anime.query.required - anime to save in the user'list
  * @returns {object} 200 - Anime was properly added to the user's list
+ * @returns {object} 401 - Invalid token
  * @returns {Error}  default - Unexpected error
  */
 router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   const anime = req.body;
   anime.anime_id = req.params.animeId;
-  anime.user_id = 1;
+  anime.user_id = req.body.user_id;
   anime.status = 'pending';
   anime.rating = '';
   userToken = req.header('x-access-token')
@@ -144,10 +152,13 @@ router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
  * @group Anime - Operations about Anime
  * @param {string} anime.query.required - anime to update in the user's list
  * @returns {object} 200 - Anime was properly updated from the user's list
+ * @returns {object} 404 - There's no user with that anime in database
+ * @returns {object} 401 - Invalid token
  * @returns {Error}  default - Unexpected error
  */
 router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   var anime = req.body;
+
   anime.anime_id = req.params.animeId;
   userToken = req.header('x-access-token')
 
@@ -166,6 +177,10 @@ router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
     if (err == 401){
       res.status(401).json({
         error: 'Unauthorized. Authentication failed.'
+    })
+    } else if (err == 404) {
+      res.status(404).json({
+        error: 'The resource doesn\'t exists.'
     })
     }
   });

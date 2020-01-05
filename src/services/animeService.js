@@ -99,14 +99,18 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
-      if ('auth' in body && !body.auth) {
+      if (('auth' in body && !body.auth) || body._id != userId) {
           reject(401)
         } else {
       AnimeModel.findOneAndDelete({
         anime_id: animeId,
         user_id: userId
       }, function (err, docs) {
-        resolve();
+        if(docs){
+          resolve();
+        }else{
+          reject(404);
+        }
       });
     }});
     });
@@ -116,7 +120,7 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
-      if ('auth' in body && !body.auth) {
+      if (('auth' in body && !body.auth) || body._id != userId) {
           reject(401)
         } else {
       AnimeModel.create({
@@ -135,14 +139,18 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
-      if ('auth' in body && !body.auth) {
+      if (('auth' in body && !body.auth) || body._id != anime.user_id) {
           reject(401)
         } else {
       AnimeModel.findOneAndUpdate({
         anime_id: anime.anime_id,
         user_id: anime.user_id
-      }, anime, function () {
-        resolve();
+      }, anime, function (err, docs) {
+        if(docs){
+          resolve();
+        }else{
+          reject(404);
+        }
       });
     }});
     });
