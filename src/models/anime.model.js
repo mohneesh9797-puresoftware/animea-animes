@@ -8,7 +8,7 @@ const AnimeSchema = new mongoose.Schema({
     unique: false,
   },
   user_id: {
-    type: Number,
+    type: String,
     required: true,
     unique: false,
   },

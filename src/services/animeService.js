@@ -62,28 +62,36 @@ class AnimeService {
     });
   }
 
-  static getUserAnimesById(userId) {
+  static getUserAnimesById(userId, userToken) {
     return new Promise(function (resolve, reject) {
-        AnimeModel.find({
-          user_id: userId,
-        })
-          .then((doc) => {
-            const userAnimes = [];
-            for (let i = 0; i < doc.length; i++) {
-              const userAnime = doc[i];
-              userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
-            }
-            Promise.all(userAnimes).then((response) => {
-              resolve(response.map((x, index) => {
-                x = x.data[0];
-                x.userData = doc[index];
-                return x;
-              }));
-            });
+      // request.get(`http://${SERVER_IP}:${GATEWAY_PORT}/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken})
+      request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+        if (!body.auth) {
+          reject(401)
+        } else {
+          console.log(body)
+          AnimeModel.find({
+            user_id: userId,
           })
-          .catch((err) => {
-            reject(err);
-          });
+            .then((doc) => {
+              const userAnimes = [];
+              for (let i = 0; i < doc.length; i++) {
+                const userAnime = doc[i];
+                userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
+              }
+              Promise.all(userAnimes).then((response) => {
+                resolve(response.map((x, index) => {
+                  x = x.data[0];
+                  x.userData = doc[index];
+                  return x;
+                }));
+              });
+            })
+            .catch((err) => {
+              reject(err);
+            });
+        }
+      })
     });
   }
 

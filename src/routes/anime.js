@@ -65,13 +65,19 @@ router.get(BASE_API_PATH + '/animes/:id', (req, res) => {
  */
 router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
   userId = req.params.id;
+  userToken = req.header('x-access-token')
   cacheKey = `getUserAnimesById:${userId}`
   cachedBody = cache.get(cacheKey);
 
-  AnimeService.getUserAnimesById(userId).then((response) => {
+  AnimeService.getUserAnimesById(userId, userToken).then((response) => {
     cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
     res.json(response);
   }, function (err) {
+    if (err == 401){
+      res.status(401).json({
+        error: 'Unauthorized. Authentication failed.'
+    })
+    }
     console.log(err);
     if (cachedBody) {
       console.log("Using cache...")

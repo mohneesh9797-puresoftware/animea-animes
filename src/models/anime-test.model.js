@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const AnimeTestSchema = new mongoose.Schema({
   status: String,
   anime_id: {
-    type: Number,
+    type: String,
     required: true,
     unique: false,
   },
