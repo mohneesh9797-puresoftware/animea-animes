@@ -120,7 +120,7 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
-      if (('auth' in body && !body.auth) || body._id != userId) {
+      if (('auth' in body && !body.auth) || body._id != anime.user_id) {
           reject(401)
         } else {
       AnimeModel.create({
@@ -139,6 +139,9 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
+      console.log("patata")
+      console.log(body._id)
+      console.log(anime.user_id)
       if (('auth' in body && !body.auth) || body._id != anime.user_id) {
           reject(401)
         } else {
