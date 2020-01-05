@@ -11,7 +11,7 @@ jobs:
       script:
       - npm test
     - stage: build docker image
-      if: branch = develop
+      if: branch = master
       arch: arm64
       language: bash
       script:
@@ -19,7 +19,7 @@ jobs:
       - docker tag animea-animes animea/animea-animes:latest
       - docker push animea/animea-animes:latest
     - stage: update services in server
-      if: branch = develop
+      if: branch = master
       arch: amd64
       language: bash
       script:
