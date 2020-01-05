@@ -135,6 +135,7 @@ router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
  */
 router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   var anime = req.body;
+
   anime.anime_id = req.params.animeId;
 
   if (req.body.status) {
@@ -144,6 +145,8 @@ router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   if (req.body.rating) {
     anime.rating = req.body.rating;
   }
+
+  anime.user_id = '1'
 
   AnimeService.updateUserAnimeById(anime).then((response) =>{
     res.sendStatus(200);
