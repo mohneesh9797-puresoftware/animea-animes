@@ -97,11 +97,18 @@ router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
 router.delete(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   animeId = req.params.animeId;
   userId = 1;
+  userToken = req.header('x-access-token')
 
-  AnimeService.deleteUserAnimeById(animeId, userId).then((response) => {
+
+  AnimeService.deleteUserAnimeById(animeId, userId, userToken).then((response) => {
     res.sendStatus(200);
   }, function(err) {
     console.log(err);
+    if (err == 401){
+      res.status(401).json({
+        error: 'Unauthorized. Authentication failed.'
+    })
+    }
   });
 });
 
@@ -118,11 +125,17 @@ router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   anime.user_id = 1;
   anime.status = 'pending';
   anime.rating = '';
+  userToken = req.header('x-access-token')
 
-  AnimeService.postUserNewAnime(anime).then((response) =>{
+  AnimeService.postUserNewAnime(anime, userToken).then((response) =>{
     res.sendStatus(201);
   }, function(err) {
     console.log(err);
+    if (err == 401){
+      res.status(401).json({
+        error: 'Unauthorized. Authentication failed.'
+    })
+    }
   });
 });
 
@@ -136,6 +149,7 @@ router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
 router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   var anime = req.body;
   anime.anime_id = req.params.animeId;
+  userToken = req.header('x-access-token')
 
   if (req.body.status) {
     anime.status = req.body.status;
@@ -145,10 +159,15 @@ router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
     anime.rating = req.body.rating;
   }
 
-  AnimeService.updateUserAnimeById(anime).then((response) =>{
+  AnimeService.updateUserAnimeById(anime, userToken).then((response) =>{
     res.sendStatus(200);
   }, function(err){
     console.log(err);
+    if (err == 401){
+      res.status(401).json({
+        error: 'Unauthorized. Authentication failed.'
+    })
+    }
   });
 });
 

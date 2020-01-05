@@ -66,10 +66,10 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       // request.get(`http://${SERVER_IP}:${GATEWAY_PORT}/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken})
       request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-        if (!body.auth) {
+      body = JSON.parse(body)  
+      if ('auth' in body && !body.auth) {
           reject(401)
         } else {
-          console.log(body)
           AnimeModel.find({
             user_id: userId,
           })
@@ -95,19 +95,30 @@ class AnimeService {
     });
   }
 
-  static deleteUserAnimeById(animeId, userId) {
+  static deleteUserAnimeById(animeId, userId, userToken) {
     return new Promise(function (resolve, reject) {
+      request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      body = JSON.parse(body)  
+      if ('auth' in body && !body.auth) {
+          reject(401)
+        } else {
       AnimeModel.findOneAndDelete({
         anime_id: animeId,
         user_id: userId
       }, function (err, docs) {
         resolve();
       });
+    }});
     });
   }
 
-  static postUserNewAnime(anime) {
+  static postUserNewAnime(anime, userToken) {
     return new Promise(function (resolve, reject) {
+      request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      body = JSON.parse(body)  
+      if ('auth' in body && !body.auth) {
+          reject(401)
+        } else {
       AnimeModel.create({
         'anime_id': anime.anime_id,
         'user_id': anime.user_id,
@@ -116,17 +127,24 @@ class AnimeService {
       }, function () {
         resolve();
       });
-    });
+    }});
+  });
   }
 
-  static updateUserAnimeById(anime) {
+  static updateUserAnimeById(anime, userToken) {
     return new Promise(function (resolve, reject) {
+      request.get(`http://localhost:3003/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      body = JSON.parse(body)  
+      if ('auth' in body && !body.auth) {
+          reject(401)
+        } else {
       AnimeModel.findOneAndUpdate({
         anime_id: anime.anime_id,
         user_id: anime.user_id
       }, anime, function () {
         resolve();
       });
+    }});
     });
   }
 }
