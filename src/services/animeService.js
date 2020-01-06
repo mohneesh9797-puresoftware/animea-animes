@@ -105,6 +105,36 @@ class AnimeService {
     });
   }
 
+  static getFriendsForAnimeById(userId, animeId, userToken) {
+    return new Promise(function (resolve, reject) {
+      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+        body = JSON.parse(body)
+        if (('auth' in body && !body.auth) || body._id != userId) {
+          reject(401)
+        } else {
+          request.get(`http://localhost:3003/api/v1/users/${userId}/friends`, (err, response, body) => {
+            if (err) {
+              console.log('Error requesting friends...')
+            } else {
+              const friends = [];
+              var body = JSON.parse(response.body)
+              for (let i = 0; i < body.length; i++) {
+                const friendId = body[i]._id;
+                friends.push(AnimeModel.find({
+                  user_id: friendId,
+                  anime_id: animeId
+                }));
+              }
+                Promise.all(friends).then((response) => {
+                  resolve(response.map(x => {return x[0].user_id}));
+                });
+              }
+            })
+        }
+      })
+    });
+  }
+
   static deleteUserAnimeById(animeId, userId, userToken) {
     return new Promise(function (resolve, reject) {
       request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
