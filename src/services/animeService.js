@@ -126,7 +126,18 @@ class AnimeService {
                 }));
               }
                 Promise.all(friends).then((response) => {
-                  resolve(response.map(x => {return x[0].user_id}));
+                  resolve(response.map(x => {
+                    for (let i = 0; i < body.length; i++){
+                    var friendObj = body[i]; 
+                      if(friendObj._id = x[0].user_id){
+                        var friend = {
+                          id: x[0].user_id,
+                          username: friendObj.username,
+                          profilePic: friendObj.profilePic}
+                          return friend
+                      }
+                    }
+                  }));
                 });
               }
             })
