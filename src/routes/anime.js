@@ -27,7 +27,7 @@ router.get(BASE_API_PATH + '/animes', (req, res) => {
 
   const filters = {
     'status': req.query.status ? req.query.status : '',
-    'genres': req.query.genres ? req.query.genres : '',
+    'genres': req.query.genre ? req.query.genre : '',
     'text': req.query.text ? req.query.text : '',
   };
 
