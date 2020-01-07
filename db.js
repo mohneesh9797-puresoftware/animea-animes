@@ -4,7 +4,7 @@ dotenv.config();
 
 const SERVER = process.env.SERVER;
 const DATABASE = process.env.DATABASE;
-const USER = process.env.USER;
+const DB_USER = process.env.DB_USER;
 const PASSWORD = process.env.PASSWORD;
 const OPTIONS = process.env.OPTIONS;
 
