@@ -4,5 +4,5 @@ const server = require("./server.js")
 database.connect();
 
 // Start server
-const PORT = process.env.PORT || 3001;
+const PORT = (process.env.PORT || 3000);
 server.listen(PORT, () => console.info(`Server has started on port ${PORT}`));
