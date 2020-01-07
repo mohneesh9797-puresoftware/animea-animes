@@ -51,8 +51,16 @@ class AnimeService {
             reject(err);
           } else {
             var data = JSON.parse(response.body);
-            cache.put(options.url, data, 86400000) // the cache will be stored 24h
-            resolve(data);
+            AnimeModel.aggregate([
+              { "$group": {
+                  "_id": animeId,
+                  "avgRating": { "$avg": { "$ifNull": ["$rating",0 ] } }    
+              }}
+          ]).then((response) => {
+              data.data[0].animeaAverage = response[0].avgRating;
+              cache.put(options.url, data, 86400000) // the cache will be stored 24h
+              resolve(data);
+            });
           }
         });
       } else {
@@ -63,8 +71,11 @@ class AnimeService {
   }
 
   static getUserAnimesById(userId, userToken) {
+    console.log(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`)
+
     return new Promise(function (resolve, reject) {
       request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      console.log(body)
       body = JSON.parse(body)  
       if ('auth' in body && !body.auth) {
           reject(401)
@@ -89,6 +100,47 @@ class AnimeService {
             .catch((err) => {
               reject(err);
             });
+        }
+      })
+    });
+  }
+
+  static getFriendsForAnimeById(userId, animeId, userToken) {
+    return new Promise(function (resolve, reject) {
+      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+        body = JSON.parse(body)
+        if (('auth' in body && !body.auth) || body._id != userId) {
+          reject(401)
+        } else {
+          request.get(`http://localhost:3003/api/v1/users/${userId}/friends`, (err, response, body) => {
+            if (err) {
+              console.log('Error requesting friends...')
+            } else {
+              const friends = [];
+              var body = JSON.parse(response.body)
+              for (let i = 0; i < body.length; i++) {
+                const friendId = body[i]._id;
+                friends.push(AnimeModel.find({
+                  user_id: friendId,
+                  anime_id: animeId
+                }));
+              }
+                Promise.all(friends).then((response) => {
+                  resolve(response.map(x => {
+                    for (let i = 0; i < body.length; i++){
+                    var friendObj = body[i]; 
+                      if(friendObj._id = x[0].user_id){
+                        var friend = {
+                          id: x[0].user_id,
+                          username: friendObj.username,
+                          profilePic: friendObj.profilePic}
+                          return friend
+                      }
+                    }
+                  }));
+                });
+              }
+            })
         }
       })
     });
@@ -138,9 +190,6 @@ class AnimeService {
     return new Promise(function (resolve, reject) {
       request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
-      console.log("patata")
-      console.log(body._id)
-      console.log(anime.user_id)
       if (('auth' in body && !body.auth) || body._id != anime.user_id) {
           reject(401)
         } else {
