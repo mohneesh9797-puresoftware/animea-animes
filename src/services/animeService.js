@@ -157,11 +157,11 @@ class AnimeService {
         anime_id: animeId,
         user_id: userId
       }, function (err, docs) {
-        if(docs){
+        // if(docs){
           resolve();
-        }else{
-          reject(404);
-        }
+        // }else{
+        //   reject(404);
+        // }
       });
     }});
     });
@@ -197,11 +197,11 @@ class AnimeService {
         anime_id: anime.anime_id,
         user_id: anime.user_id
       }, anime, function (err, docs) {
-        if(docs){
+        // if(docs){
           resolve();
-        }else{
-          reject(404);
-        }
+        // }else{
+        //   reject(404);
+        // }
       });
     }});
     });

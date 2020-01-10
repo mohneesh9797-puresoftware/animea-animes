@@ -90,47 +90,47 @@ describe("POST /anime", () => {
     });
 });
 
-// describe("PUT /anime", () => {
-//     const userAnimeIds = {user_id:'test-id', anime_id: 7442}
-//     const updatedAnime = new Anime({user_id: 'test-id', rating: '4', status: 'pending'});
-//     const options = {
-//         headers: {
-//             'x-access-token': 'test-token'
-//         }
-//     }
-//     let dbUpdate;
-//     beforeEach(() => {
-//         dbUpdate = jest.spyOn(Anime, "findOneAndUpdate");
-//     });
+describe("PUT /anime", () => {
+    const userAnimeIds = {user_id:'test-id', anime_id: 7442}
+    const updatedAnime = new Anime({user_id: 'test-id', rating: '4', status: 'pending'});
+    const options = {
+        headers: {
+            'x-access-token': 'test-token'
+        }
+    }
+    let dbUpdate;
+    beforeEach(() => {
+        dbUpdate = jest.spyOn(Anime, "findOneAndUpdate");
+    });
 
-//     it('Should update the anime in the user list', () => {
-//         dbUpdate.mockImplementation((userAnimeIds, updatedAnime, callback) => {
-//             callback(false);
-//         });
-//         return request(app).put(BASE_API_PATH + '/user/animes/7442', options).send(updatedAnime).then((response) => {
-//             expect(response.statusCode).toBe(200);
-//         });
-//     });
-// });
+    it('Should update the anime in the user list', () => {
+        dbUpdate.mockImplementation((userAnimeIds, updatedAnime, callback) => {
+            callback(false);
+        });
+        return request(app).put(BASE_API_PATH + '/user/animes/7442', options).send(updatedAnime).then((response) => {
+            expect(response.statusCode).toBe(200);
+        });
+    });
+});
 
-// describe("DELETE /anime", () => {
-//     const userAnimeIds = {user_id:'test-id', anime_id: 7442}
-//     const options = {
-//         headers: {
-//             'x-access-token': 'test-token'
-//         }
-//     }
-//     let dbDelete;
-//     beforeEach(() => {
-//         dbDelete = jest.spyOn(Anime, "findOneAndDelete");
-//     });
+describe("DELETE /anime", () => {
+    const userAnimeIds = {user_id:'test-id', anime_id: 7442}
+    const options = {
+        headers: {
+            'x-access-token': 'test-token'
+        }
+    }
+    let dbDelete;
+    beforeEach(() => {
+        dbDelete = jest.spyOn(Anime, "findOneAndDelete");
+    });
 
-//     it('Should add a new anime to user list', () => {
-//         dbDelete.mockImplementation((userAnimeIds, callback) => {
-//             callback(userAnimeIds);
-//         });
-//         return request(app).delete(BASE_API_PATH + '/user/animes/7442', options).send(userAnimeIds).then((response) => {
-//             expect(response.statusCode).toBe(200);
-//         });
-//     });
-// });
+    it('Should add a new anime to user list', () => {
+        dbDelete.mockImplementation((userAnimeIds, callback) => {
+            callback(userAnimeIds);
+        });
+        return request(app).delete(BASE_API_PATH + '/user/animes/7442', options).send(userAnimeIds).then((response) => {
+            expect(response.statusCode).toBe(200);
+        });
+    });
+});
