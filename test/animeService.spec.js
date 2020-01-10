@@ -14,7 +14,7 @@ beforeEach(() => {
         .reply(200, kitsuResponses.getAnimesByGenre)
         .get('/api/edge/anime?filter[id]=207')
         .reply(200, kitsuResponses.getAnimeById)
-    nock(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}`)
+    nock(`https://animea-gateway.herokuapp.com/`)
         .get('/api/v1/auth/me')
         .reply(200, JSON.stringify(authResponses.verifyToken))
 });

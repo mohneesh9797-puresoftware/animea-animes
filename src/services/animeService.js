@@ -71,10 +71,10 @@ class AnimeService {
   }
 
   static getUserAnimesById(userId, userToken) {
-    console.log(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`)
+    console.log(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`)
 
     return new Promise(function (resolve, reject) {
-      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       console.log(body)
       body = JSON.parse(body)  
       if ('auth' in body && !body.auth) {
@@ -107,12 +107,12 @@ class AnimeService {
 
   static getFriendsForAnimeById(userId, animeId, userToken) {
     return new Promise(function (resolve, reject) {
-      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
         body = JSON.parse(body)
         if (('auth' in body && !body.auth) || body._id != userId) {
           reject(401)
         } else {
-          request.get(`http://localhost:3003/api/v1/users/${userId}/friends`, (err, response, body) => {
+          request.get(`https://animea-gateway.herokuapp.com/friends/api/v1/users/${userId}/friends`, (err, response, body) => {
             if (err) {
               console.log('Error requesting friends...')
             } else {
@@ -148,7 +148,7 @@ class AnimeService {
 
   static deleteUserAnimeById(animeId, userId, userToken) {
     return new Promise(function (resolve, reject) {
-      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
       if (('auth' in body && !body.auth) || body._id != userId) {
           reject(401)
@@ -169,7 +169,7 @@ class AnimeService {
 
   static postUserNewAnime(anime, userToken) {
     return new Promise(function (resolve, reject) {
-      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
       if (('auth' in body && !body.auth) || body._id != anime.user_id) {
           reject(401)
@@ -188,7 +188,7 @@ class AnimeService {
 
   static updateUserAnimeById(anime, userToken) {
     return new Promise(function (resolve, reject) {
-      request.get(`http://${process.env.SERVER_IP}:${process.env.GATEWAY_PORT}/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
       body = JSON.parse(body)  
       if (('auth' in body && !body.auth) || body._id != anime.user_id) {
           reject(401)
