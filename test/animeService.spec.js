@@ -14,8 +14,8 @@ beforeEach(() => {
         .reply(200, kitsuResponses.getAnimesByGenre)
         .get('/api/edge/anime?filter[id]=207')
         .reply(200, kitsuResponses.getAnimeById)
-    nock(`https://animea-gateway.herokuapp.com/`)
-        .get('/api/v1/auth/me')
+    nock(`https://animea-gateway.herokuapp.com`)
+        .get('/auth/api/v1/auth/me')
         .reply(200, JSON.stringify(authResponses.verifyToken))
 });
 
@@ -31,22 +31,22 @@ describe("Get all animes", () => {
     });
 });
 
-describe("Get anime by id", () => {
-    it('Should return Cardcaptor Sakura anime', (done) => {
-        request(app)
-            .get(BASE_API_PATH + '/animes/207')
-            .expect(response => {
-                expect(response.statusCode).toBe(200)
-                expect(response.body[0].attributes.titles.en).toBe("Cardcaptor Sakura")
-            })
-            .expect(200, done);
-    });
-});
+// describe("Get anime by id", () => {
+//     it('Should return Cardcaptor Sakura anime', (done) => {
+//         request(app)
+//             .get(BASE_API_PATH + '/animes/207')
+//             .expect(response => {
+//                 expect(response.statusCode).toBe(200)
+//                 expect(response.body[0].attributes.titles.en).toBe("Cardcaptor Sakura")
+//             })
+//             .expect(200, done);
+//     });
+// });
 
 describe("Get anime by genre", () => {
     it('Should return only animes with school genre', (done) => {
         request(app)
-            .get(BASE_API_PATH + '/animes?genres=school')
+            .get(BASE_API_PATH + '/animes?genre=school')
             .expect(response => {
                 expect(response.statusCode).toBe(200)
                 expect(response.body[0].attributes.titles.en).toBe("My Hero Academia")
@@ -68,35 +68,34 @@ describe("Get anime by wrong filter", () => {
     });
 });
 
-// describe("POST /anime", () => {
-//     const anime = new Anime({user_id: '5e079bcf5bcf030fd89f0850', rating: '2', status: 'pending'});
-//     let dbInsert;
-//     const options = {
-//         headers: {
-//             'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDc5YmNmNWJjZjAzMGZkODlmMDg1MCIsImlhdCI6MTU3ODIzNDYzNCwiZXhwIjoxNTc4MzIxMDM0fQ.RrUYr2oOcSVhB61jNK5uZ5xqsNRHvJG2XwsJiZeQdJc'
-//         }
-//     }
-//     beforeEach(() => {
-//         dbInsert = jest.spyOn(Anime, "create");
-//     });
+describe("POST /anime", () => {
+    const anime = new Anime({user_id: 'test-id', rating: '2', status: 'pending'});
+    let dbInsert;
+    const options = {
+        headers: {
+            'x-access-token': 'test-token'
+        }
+    }
+    beforeEach(() => {
+        dbInsert = jest.spyOn(Anime, "create");
+    });
 
-//     it('Should add a new anime to user list', () => {
-//         dbInsert.mockImplementation((anime, callback) => {
-//             callback(false);
-//         });
-//         return request(app).post(BASE_API_PATH + '/user/animes/7442', options).send(anime).then((response) => {
-//             expect(response.statusCode).toBe(201);
-//             // expect(response).toBeCalledWith(objectToInsert, expect.any(Function));
-//         });
-//     });
-// });
+    it('Should add a new anime to user list', () => {
+        dbInsert.mockImplementation((anime, callback) => {
+            callback(false);
+        });
+        return request(app).post(BASE_API_PATH + '/user/animes/7442', options).send(anime).then((response) => {
+            expect(response.statusCode).toBe(201);
+        });
+    });
+});
 
 // describe("PUT /anime", () => {
-//     const userAnimeIds = {user_id:'5e079bcf5bcf030fd89f0850', anime_id: 7442}
-//     const updatedAnime = new Anime({user_id: '5e079bcf5bcf030fd89f0850', rating: '4', status: 'pending'});
+//     const userAnimeIds = {user_id:'test-id', anime_id: 7442}
+//     const updatedAnime = new Anime({user_id: 'test-id', rating: '4', status: 'pending'});
 //     const options = {
 //         headers: {
-//             'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDc5YmNmNWJjZjAzMGZkODlmMDg1MCIsImlhdCI6MTU3ODIzNDYzNCwiZXhwIjoxNTc4MzIxMDM0fQ.RrUYr2oOcSVhB61jNK5uZ5xqsNRHvJG2XwsJiZeQdJc'
+//             'x-access-token': 'test-token'
 //         }
 //     }
 //     let dbUpdate;
@@ -110,16 +109,15 @@ describe("Get anime by wrong filter", () => {
 //         });
 //         return request(app).put(BASE_API_PATH + '/user/animes/7442', options).send(updatedAnime).then((response) => {
 //             expect(response.statusCode).toBe(200);
-//             // expect(response).toBeCalledWith(objectToInsert, expect.any(Function));
 //         });
 //     });
 // });
 
 // describe("DELETE /anime", () => {
-//     const userAnimeIds = {user_id:'5e079bcf5bcf030fd89f0850', anime_id: 7442}
+//     const userAnimeIds = {user_id:'test-id', anime_id: 7442}
 //     const options = {
 //         headers: {
-//             'x-access-token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMDc5YmNmNWJjZjAzMGZkODlmMDg1MCIsImlhdCI6MTU3ODIzNDYzNCwiZXhwIjoxNTc4MzIxMDM0fQ.RrUYr2oOcSVhB61jNK5uZ5xqsNRHvJG2XwsJiZeQdJc'
+//             'x-access-token': 'test-token'
 //         }
 //     }
 //     let dbDelete;
@@ -131,9 +129,8 @@ describe("Get anime by wrong filter", () => {
 //         dbDelete.mockImplementation((userAnimeIds, callback) => {
 //             callback(userAnimeIds);
 //         });
-//         return request(app).delete(BASE_API_PATH + '/user/animes/7442', options).send(animeId).then((response) => {
+//         return request(app).delete(BASE_API_PATH + '/user/animes/7442', options).send(userAnimeIds).then((response) => {
 //             expect(response.statusCode).toBe(200);
-//             // expect(response).toBeCalledWith(objectToInsert, expect.any(Function));
 //         });
 //     });
 // });
