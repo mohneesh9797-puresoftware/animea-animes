@@ -34,40 +34,71 @@ class AnimeService {
     });
   }
 
-  static getAnimeById(animeId) {
+  static getAnimeById(animeId, userToken) {
     const API_PATH = process.env.API_PATH;
     const options = {
       url: `${API_PATH}/anime?filter[id]=${animeId}`,
       headers: {
-        'Accept': 'application/vnd.api+json',
-        'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json',
+      'Content-Type': 'application/vnd.api+json',
       },
     };
-    var cachedBody = cache.get(options.url);
+
     return new Promise(function (resolve, reject) {
-      if (!cachedBody) {
-        request.get(options, (err, response, body) => {
-          if (err) {
-            reject(err);
-          } else {
-            var data = JSON.parse(response.body);
-            AnimeModel.aggregate([
-              { "$group": {
-                  "_id": animeId,
-                  "avgRating": { "$avg": { "$ifNull": ["$rating",0 ] } }    
-              }}
-          ]).then((response) => {
-              data.data[0].animeaAverage = response[0].avgRating;
-              cache.put(options.url, data, 86400000) // the cache will be stored 24h
-              resolve(data);
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, bodyMaster) => {
+        bodyMaster = JSON.parse(bodyMaster)
+        if ('auth' in bodyMaster && !bodyMaster.auth) {
+          console.log("NO HAY AUTH")
+            request.get(options, (err, response, body) => {
+              if (err) {
+                reject(err);
+              } else {
+                var data = JSON.parse(response.body);
+  
+                AnimeModel.aggregate([
+                  { "$group": {
+                      "_id": animeId,
+                      "avgRating": { "$avg": { "$ifNull": ["$rating",0 ] } },
+                  }}
+              ]).then((response) => {
+                  data.data[0].animeaAverage = response[0].avgRating;
+                  resolve(data);
+                });
+              }
             });
-          }
-        });
-      } else {
-        console.log("Using cache...")
-        resolve(cachedBody);
-      }
+        } else {
+          console.log("SI HAY AUTH")
+            request.get(options, (err, response, body) => {
+              if (err) {
+                reject(err);
+              } else {
+                var data = JSON.parse(response.body);
+  
+                AnimeModel.findOne({anime_id: animeId, user_id: bodyMaster._id}, (err, anime) => {
+                  console.log(anime)
+                  data.data[0].status = anime.status
+                  data.data[0].rating = anime.rating
+                  data.data[0].userId = anime.user_id
+                })
+  
+                AnimeModel.aggregate([
+                  { "$group": {
+                      "_id": animeId,
+                      "avgRating": { "$avg": { "$ifNull": ["$rating",0 ] } },
+                  }}
+              ]).then((response) => {
+                  data.data[0].animeaAverage = response[0].avgRating;
+                  console.log("LOS DATOS")
+                  console.log(data.data[0].status)
+                  resolve(data);
+                });
+              }
+            });
+        }
+      })
     });
+    
+    
   }
 
   static getUserAnimesById(userId, userToken) {

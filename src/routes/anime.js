@@ -48,8 +48,9 @@ router.get(BASE_API_PATH + '/animes', (req, res) => {
  */
 router.get(BASE_API_PATH + '/animes/:id', (req, res) => {
   animeId = req.params.id;
+  userToken = req.header('x-access-token')
 
-  AnimeService.getAnimeById(animeId).then((response) =>{
+  AnimeService.getAnimeById(animeId, userToken).then((response) =>{
     res.send(response.data);
   }, function(err) {
     console.log(err);

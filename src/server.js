@@ -18,7 +18,7 @@ let options = {
             title: 'Swagger',
             version: '1.0.0',
         },
-        host: 'localhost:3000',
+        host: 'localhost:3001',
         basePath: '/v1',
         produces: [
             "application/json",
