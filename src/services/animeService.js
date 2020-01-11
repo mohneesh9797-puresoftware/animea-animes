@@ -76,9 +76,14 @@ class AnimeService {
   
                 AnimeModel.findOne({anime_id: animeId, user_id: bodyMaster._id}, (err, anime) => {
                   console.log(anime)
-                  data.data[0].status = anime.status
-                  data.data[0].rating = anime.rating
-                  data.data[0].userId = anime.user_id
+                  if(anime) {
+                    data.data[0].status = anime.status
+                    data.data[0].rating = anime.rating
+                    data.data[0].userId = anime.user_id
+                    data.data[0].userHasAnime = true
+                  } else {
+                    data.data[0].userHasAnime = false
+                  }
                 })
   
                 AnimeModel.aggregate([
