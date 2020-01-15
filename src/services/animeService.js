@@ -67,36 +67,34 @@ class AnimeService {
               }
             });
         } else {
-          console.log("SI HAY AUTH")
             request.get(options, (err, response, body) => {
               if (err) {
                 reject(err);
               } else {
                 var data = JSON.parse(response.body);
-  
-                AnimeModel.findOne({anime_id: animeId, user_id: bodyMaster._id}, (err, anime) => {
-                  console.log(anime)
-                  if(anime) {
-                    data.data[0].status = anime.status
-                    data.data[0].rating = anime.rating
-                    data.data[0].userId = anime.user_id
-                    data.data[0].userHasAnime = true
-                  } else {
-                    data.data[0].userHasAnime = false
-                  }
-                })
-  
+
                 AnimeModel.aggregate([
                   { "$group": {
                       "_id": animeId,
                       "avgRating": { "$avg": { "$ifNull": ["$rating",0 ] } },
                   }}
-              ]).then((response) => {
+                ]).then((response) => {
                   data.data[0].animeaAverage = response[0].avgRating;
-                  console.log("LOS DATOS")
-                  console.log(data.data[0].status)
-                  resolve(data);
                 });
+                AnimeModel.findOne({
+                  anime_id: animeId, 
+                  user_id: bodyMaster._id
+                }).then((response) => {
+                  if(response) {
+                    data.data[0].status = response.status
+                    data.data[0].rating = response.rating
+                    data.data[0].userId = response.user_id
+                    data.data[0].userHasAnime = true
+                  } else {
+                    data.data[0].userHasAnime = false
+                  }
+                    resolve(data);
+                })
               }
             });
         }
