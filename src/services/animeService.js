@@ -48,7 +48,6 @@ class AnimeService {
       request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, bodyMaster) => {
         bodyMaster = JSON.parse(bodyMaster)
         if ('auth' in bodyMaster && !bodyMaster.auth) {
-          console.log("NO HAY AUTH")
             request.get(options, (err, response, body) => {
               if (err) {
                 reject(err);
@@ -109,7 +108,6 @@ class AnimeService {
 
     return new Promise(function (resolve, reject) {
       request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-      console.log(body)
       body = JSON.parse(body)  
       if ('auth' in body && !body.auth) {
           reject(401)
