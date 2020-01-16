@@ -88,7 +88,7 @@ router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
 });
 
 /**
- * @route GET /anime/:id/friends
+ * @route GET /user/:userId/animes/:animeId
  * @group Anime - Operations about Anime
  * @param {string} userId.query.required - identifier of the user
  * @param {string} animeId.query.required - identifier of the anime
@@ -112,6 +112,30 @@ router.get(BASE_API_PATH + '/user/:userId/animes/:animeId', (req, res) => {
         error: 'Unauthorized. Authentication failed.'
     })
     }
+    console.log(err);
+    if (cachedBody) {
+      console.log("Using cache...")
+      res.json(cachedBody);
+    }
+  });
+});
+
+/**
+ * @route GET /animes/:animeId/users
+ * @group Anime - Operations about Anime
+ * @param {string} animeId.query.required - identifier of the anime
+ * @returns {object} 200 - An array with the users that have watched that anime
+ * @returns {Error}  default - Unexpected error
+ */
+router.get(BASE_API_PATH + '/animes/:animeId/users', (req, res) => {
+  animeId = req.params.animeId;
+  cacheKey = `getUsersForAnimeById:${animeId}`
+  cachedBody = cache.get(cacheKey);
+
+  AnimeService.getUsersForAnimeById(animeId).then((response) => {
+    cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
+    res.json(response);
+  }, function (err) {
     console.log(err);
     if (cachedBody) {
       console.log("Using cache...")

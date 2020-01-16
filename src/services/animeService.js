@@ -146,6 +146,39 @@ class AnimeService {
     });
   }
 
+  static getUsersForAnimeById(animeId) {
+    return new Promise(function (resolve, reject) {
+          request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/users/`, (err, response, body) => {
+            if (err) {
+              console.log('Error requesting friends...')
+            } else {
+              const users = [];
+              var body = JSON.parse(response.body)
+              for (let i = 0; i < body.length; i++) {
+                const userId = body[i]._id;
+                users.push(AnimeModel.find({
+                  anime_id: animeId
+                }));
+              }
+                Promise.all(users).then((response) => {
+                  resolve(response.map(x => {
+                    for (let i = 0; i < body.length; i++){
+                    var userObj = body[i]; 
+                      if(userObj._id = x[0].user_id){
+                        var user = {
+                          id: x[0].user_id,
+                          username: userObj.username,
+                          profilePic: userObj.profilePic}
+                          return user
+                      }
+                    }
+                  }));
+                });
+              }
+            })
+    });
+  }
+
   static deleteUserAnimeById(animeId, userId, userToken) {
     return new Promise(function (resolve, reject) {
       request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
@@ -157,11 +190,11 @@ class AnimeService {
         anime_id: animeId,
         user_id: userId
       }, function (err, docs) {
-        // if(docs){
+        if(docs){
           resolve();
-        // }else{
-        //   reject(404);
-        // }
+        }else{
+          reject(404);
+        }
       });
     }});
     });
@@ -197,11 +230,11 @@ class AnimeService {
         anime_id: anime.anime_id,
         user_id: anime.user_id
       }, anime, function (err, docs) {
-        // if(docs){
+        if(docs){
           resolve();
-        // }else{
-        //   reject(404);
-        // }
+        }else{
+          reject(404);
+        }
       });
     }});
     });

@@ -8,14 +8,19 @@ describe('Animes DB connection', () => {
     })
 
     it('inserts an anime in the user list in db', (done) => {
-        const anime = new AnimeTest({anime_id: 7442, user_id: '1', rating: 2, status: 'pending'});
-        anime.save((err, anime) => {
-            expect(err).toBeNull();
+        const anime = {anime_id: 7442, user_id: '1', rating: 2, status: 'pending'};
+        AnimeTest.create({
+            'anime_id': anime.anime_id,
+            'user_id': anime.user_id,
+            'status': anime.status,
+            'rating': anime.rating,
+          }, function () {
             AnimeTest.find({}, (err, animes) => {
+                expect(err).toBeNull();
                 expect(animes.length).toEqual(1);
                 done();
             });
-        });
+          });
     });
 
     it('updates an anime in the user list in db', (done) => {

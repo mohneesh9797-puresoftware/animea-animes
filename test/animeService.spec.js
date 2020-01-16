@@ -31,17 +31,23 @@ describe("Get all animes", () => {
     });
 });
 
-// describe("Get anime by id", () => {
-//     it('Should return Cardcaptor Sakura anime', (done) => {
-//         request(app)
-//             .get(BASE_API_PATH + '/animes/207')
-//             .expect(response => {
-//                 expect(response.statusCode).toBe(200)
-//                 expect(response.body[0].attributes.titles.en).toBe("Cardcaptor Sakura")
-//             })
-//             .expect(200, done);
-//     });
-// });
+describe("Get anime by id", () => {
+    beforeEach(() => {
+        dbAggregate = jest.spyOn(Anime, "aggregate");
+    });
+    it('Should return Cardcaptor Sakura anime', (done) => {
+        dbAggregate.mockImplementation(() => {
+            return Promise.resolve([{'avgRating': 4.75}])
+        });
+        request(app)
+            .get(BASE_API_PATH + '/animes/207')
+            .expect(response => {
+                expect(response.statusCode).toBe(200)
+                expect(response.body[0].attributes.titles.en).toBe("Cardcaptor Sakura")
+            })
+            .expect(200, done);
+    });
+});
 
 describe("Get anime by genre", () => {
     it('Should return only animes with school genre', (done) => {
@@ -92,7 +98,7 @@ describe("POST /anime", () => {
 
 describe("PUT /anime", () => {
     const userAnimeIds = {user_id:'test-id', anime_id: 7442}
-    const updatedAnime = new Anime({user_id: 'test-id', rating: '4', status: 'pending'});
+    const updatedAnime = {user_id: 'test-id', rating: '4', status: 'pending'};
     const options = {
         headers: {
             'x-access-token': 'test-token'
@@ -105,7 +111,7 @@ describe("PUT /anime", () => {
 
     it('Should update the anime in the user list', () => {
         dbUpdate.mockImplementation((userAnimeIds, updatedAnime, callback) => {
-            callback(false);
+            callback(null, updatedAnime)
         });
         return request(app).put(BASE_API_PATH + '/user/animes/7442', options).send(updatedAnime).then((response) => {
             expect(response.statusCode).toBe(200);
@@ -127,7 +133,7 @@ describe("DELETE /anime", () => {
 
     it('Should add a new anime to user list', () => {
         dbDelete.mockImplementation((userAnimeIds, callback) => {
-            callback(userAnimeIds);
+            callback(null, userAnimeIds);
         });
         return request(app).delete(BASE_API_PATH + '/user/animes/7442', options).send(userAnimeIds).then((response) => {
             expect(response.statusCode).toBe(200);
