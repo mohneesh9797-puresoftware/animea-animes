@@ -17,6 +17,6 @@ const AnimeTestSchema = new mongoose.Schema({
     required: false,
     unique: false,
   },
-}, { collection : 'animes-test' });
+}, {collection: 'animes-test'});
 
 module.exports = mongoose.model('AnimeTest', AnimeTestSchema);

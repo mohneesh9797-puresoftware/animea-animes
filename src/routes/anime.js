@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const cache = require('memory-cache');
 
-var BASE_API_PATH = "/api/v1";
+const BASE_API_PATH = '/api/v1';
 
 /**
  * @typedef Anime
@@ -66,22 +66,22 @@ router.get(BASE_API_PATH + '/animes/:id', (req, res) => {
  */
 router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
   userId = req.params.id;
-  userToken = req.header('x-access-token')
-  cacheKey = `getUserAnimesById:${userId}`
+  userToken = req.header('x-access-token');
+  cacheKey = `getUserAnimesById:${userId}`;
   cachedBody = cache.get(cacheKey);
 
   AnimeService.getUserAnimesById(userId, userToken).then((response) => {
-    cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
+    cache.put(cacheKey, response, 86400000); // the cache will be stored 24h
     res.json(response);
-  }, function (err) {
-    if (err == 401){
+  }, function(err) {
+    if (err == 401) {
       res.status(401).json({
-        error: 'Unauthorized. Authentication failed.'
-    })
+        error: 'Unauthorized. Authentication failed.',
+      });
     }
     console.log(err);
     if (cachedBody) {
-      console.log("Using cache...")
+      console.log('Using cache...');
       res.json(cachedBody);
     }
   });
@@ -99,22 +99,22 @@ router.get(BASE_API_PATH + '/user/:id/animes', (req, res) => {
 router.get(BASE_API_PATH + '/user/:userId/animes/:animeId', (req, res) => {
   userId = req.params.userId;
   animeId = req.params.animeId;
-  userToken = req.header('x-access-token')
-  cacheKey = `getFriendsForAnimeById:${userId}`
+  userToken = req.header('x-access-token');
+  cacheKey = `getFriendsForAnimeById:${userId}`;
   cachedBody = cache.get(cacheKey);
 
   AnimeService.getFriendsForAnimeById(userId, animeId, userToken).then((response) => {
-    cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
+    cache.put(cacheKey, response, 86400000); // the cache will be stored 24h
     res.json(response);
-  }, function (err) {
-    if (err == 401){
+  }, function(err) {
+    if (err == 401) {
       res.status(401).json({
-        error: 'Unauthorized. Authentication failed.'
-    })
+        error: 'Unauthorized. Authentication failed.',
+      });
     }
     console.log(err);
     if (cachedBody) {
-      console.log("Using cache...")
+      console.log('Using cache...');
       res.json(cachedBody);
     }
   });
@@ -129,16 +129,16 @@ router.get(BASE_API_PATH + '/user/:userId/animes/:animeId', (req, res) => {
  */
 router.get(BASE_API_PATH + '/animes/:animeId/users', (req, res) => {
   animeId = req.params.animeId;
-  cacheKey = `getUsersForAnimeById:${animeId}`
+  cacheKey = `getUsersForAnimeById:${animeId}`;
   cachedBody = cache.get(cacheKey);
 
   AnimeService.getUsersForAnimeById(animeId).then((response) => {
-    cache.put(cacheKey, response, 86400000) // the cache will be stored 24h
+    cache.put(cacheKey, response, 86400000); // the cache will be stored 24h
     res.json(response);
-  }, function (err) {
+  }, function(err) {
     console.log(err);
     if (cachedBody) {
-      console.log("Using cache...")
+      console.log('Using cache...');
       res.json(cachedBody);
     }
   });
@@ -157,21 +157,21 @@ router.get(BASE_API_PATH + '/animes/:animeId/users', (req, res) => {
 router.delete(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   animeId = req.params.animeId;
   userId = req.body.user_id;
-  userToken = req.header('x-access-token')
+  userToken = req.header('x-access-token');
 
 
   AnimeService.deleteUserAnimeById(animeId, userId, userToken).then((response) => {
     res.sendStatus(200);
   }, function(err) {
     console.log(err);
-    if (err == 401){
+    if (err == 401) {
       res.status(401).json({
-        error: 'Unauthorized. Authentication failed.'
-    })
+        error: 'Unauthorized. Authentication failed.',
+      });
     } else if (err == 404) {
       res.status(404).json({
-        error: 'The resource doesn\'t exists.'
-    })
+        error: 'The resource doesn\'t exists.',
+      });
     }
   });
 });
@@ -190,16 +190,16 @@ router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
   anime.user_id = req.body.user_id;
   anime.status = 'pending';
   anime.rating = '';
-  userToken = req.header('x-access-token')
+  userToken = req.header('x-access-token');
 
   AnimeService.postUserNewAnime(anime, userToken).then((response) =>{
     res.sendStatus(201);
   }, function(err) {
     console.log(err);
-    if (err == 401){
+    if (err == 401) {
       res.status(401).json({
-        error: 'Unauthorized. Authentication failed.'
-    })
+        error: 'Unauthorized. Authentication failed.',
+      });
     }
   });
 });
@@ -214,10 +214,10 @@ router.post(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
  * @returns {Error}  default - Unexpected error
  */
 router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
-  var anime = req.body;
+  const anime = req.body;
 
   anime.anime_id = req.params.animeId;
-  userToken = req.header('x-access-token')
+  userToken = req.header('x-access-token');
 
   if (req.body.status) {
     anime.status = req.body.status;
@@ -229,16 +229,16 @@ router.put(BASE_API_PATH + '/user/animes/:animeId', (req, res) => {
 
   AnimeService.updateUserAnimeById(anime, userToken).then((response) =>{
     res.sendStatus(200);
-  }, function(err){
+  }, function(err) {
     console.log(err);
-    if (err == 401){
+    if (err == 401) {
       res.status(401).json({
-        error: 'Unauthorized. Authentication failed.'
-    })
+        error: 'Unauthorized. Authentication failed.',
+      });
     } else if (err == 404) {
       res.status(404).json({
-        error: 'The resource doesn\'t exists.'
-    })
+        error: 'The resource doesn\'t exists.',
+      });
     }
   });
 });
