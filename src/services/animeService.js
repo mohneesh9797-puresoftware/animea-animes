@@ -182,7 +182,7 @@ class AnimeService {
 
   static getUsersForAnimeById(animeId) {
     return new Promise(function(resolve, reject) {
-      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/users/`, (err, response, body) => {
+      request.get(`https://animea-gateway.herokuapp.com/profile/api/v1/users/`, (err, response, body) => {
         if (err) {
           console.log('Error requesting users...');
         } else {
