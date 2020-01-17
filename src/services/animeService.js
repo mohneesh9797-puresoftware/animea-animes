@@ -15,20 +15,20 @@ class AnimeService {
       },
     };
 
-    var cachedBody = cache.get(options.url);
-    return new Promise(function (resolve, reject) {
+    const cachedBody = cache.get(options.url);
+    return new Promise(function(resolve, reject) {
       if (!cachedBody) {
         request.get(options, (err, response, body) => {
           if (err) {
             reject(err);
           } else {
-            var data = JSON.parse(response.body);
-            cache.put(options.url, data, 86400000) // the cache will be stored 24h
+            const data = JSON.parse(response.body);
+            cache.put(options.url, data, 86400000); // the cache will be stored 24h
             resolve(data);
           }
         });
       } else {
-        console.log("Using cache...")
+        console.log('Using cache...');
         resolve(cachedBody);
       }
     });
@@ -104,138 +104,178 @@ class AnimeService {
   }
 
   static getUserAnimesById(userId, userToken) {
-    console.log(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`)
+    console.log(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`);
 
-    return new Promise(function (resolve, reject) {
-      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-      body = JSON.parse(body)  
-      if ('auth' in body && !body.auth) {
-          reject(401)
+    return new Promise(function(resolve, reject) {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken}}, (err, response, body) => {
+        console.log(body);
+        body = JSON.parse(body);
+        if ('auth' in body && !body.auth) {
+          reject(401);
         } else {
           AnimeModel.find({
             user_id: userId,
           })
-            .then((doc) => {
-              const userAnimes = [];
-              for (let i = 0; i < doc.length; i++) {
-                const userAnime = doc[i];
-                userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
-              }
-              Promise.all(userAnimes).then((response) => {
-                resolve(response.map((x, index) => {
-                  x = x.data[0];
-                  x.userData = doc[index];
-                  return x;
-                }));
+              .then((doc) => {
+                const userAnimes = [];
+                for (let i = 0; i < doc.length; i++) {
+                  const userAnime = doc[i];
+                  userAnimes.push(AnimeService.getAnimeById(userAnime.anime_id));
+                }
+                Promise.all(userAnimes).then((response) => {
+                  resolve(response.map((x, index) => {
+                    x = x.data[0];
+                    x.userData = doc[index];
+                    return x;
+                  }));
+                });
+              })
+              .catch((err) => {
+                reject(err);
               });
-            })
-            .catch((err) => {
-              reject(err);
-            });
         }
-      })
+      });
     });
   }
 
   static getFriendsForAnimeById(userId, animeId, userToken) {
-    return new Promise(function (resolve, reject) {
-      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-        body = JSON.parse(body)
+    return new Promise(function(resolve, reject) {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken}}, (err, response, body) => {
+        body = JSON.parse(body);
         if (('auth' in body && !body.auth) || body._id != userId) {
-          reject(401)
+          reject(401);
         } else {
           request.get(`https://animea-gateway.herokuapp.com/friends/api/v1/users/${userId}/friends`, (err, response, body) => {
             if (err) {
-              console.log('Error requesting friends...')
+              console.log('Error requesting friends...');
             } else {
               const friends = [];
-              var body = JSON.parse(response.body)
+              var body = JSON.parse(response.body);
               for (let i = 0; i < body.length; i++) {
                 const friendId = body[i]._id;
                 friends.push(AnimeModel.find({
                   user_id: friendId,
-                  anime_id: animeId
+                  anime_id: animeId,
                 }));
               }
-                Promise.all(friends).then((response) => {
-                  resolve(response.map(x => {
-                    for (let i = 0; i < body.length; i++){
-                    var friendObj = body[i]; 
-                      if(friendObj._id = x[0].user_id){
-                        var friend = {
-                          id: x[0].user_id,
-                          username: friendObj.username,
-                          profilePic: friendObj.profilePic}
-                          return friend
-                      }
+              Promise.all(friends).then((response) => {
+                resolve(response.map((x) => {
+                  for (let i = 0; i < body.length; i++) {
+                    const friendObj = body[i];
+                    if (friendObj._id = x[0].user_id) {
+                      const friend = {
+                        id: x[0].user_id,
+                        username: friendObj.username,
+                        profilePic: friendObj.profilePic,
+                      };
+                      return friend;
                     }
-                  }));
-                });
-              }
-            })
+                  }
+                }));
+              });
+            }
+          });
         }
-      })
+      });
+    });
+  }
+
+  static getUsersForAnimeById(animeId) {
+    return new Promise(function(resolve, reject) {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/users/`, (err, response, body) => {
+        if (err) {
+          console.log('Error requesting users...');
+        } else {
+          const users = [];
+          var body = JSON.parse(response.body);
+          for (let i = 0; i < body.length; i++) {
+            const userId = body[i].id;
+            users.push(AnimeModel.find({
+              anime_id: animeId,
+              user_id: userId,
+            }));
+          }
+          Promise.all(users).then((response) => {
+            resolve(response.filter((x) => x.length).map((x) => {
+              for (let i = 0; i < body.length; i++) {
+                if (body[i].id == x[0].user_id) {
+                  const user = {
+                    id: x[0].user_id,
+                    username: body[i].username,
+                    profilePic: body[i].profilePic,
+                  };
+                  return user;
+                }
+              }
+            },
+            ));
+          });
+        }
+      });
     });
   }
 
   static deleteUserAnimeById(animeId, userId, userToken) {
-    return new Promise(function (resolve, reject) {
-      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-      body = JSON.parse(body)  
-      if (('auth' in body && !body.auth) || body._id != userId) {
-          reject(401)
+    return new Promise(function(resolve, reject) {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken}}, (err, response, body) => {
+        body = JSON.parse(body);
+        if (('auth' in body && !body.auth) || body._id != userId) {
+          reject(401);
         } else {
-      AnimeModel.findOneAndDelete({
-        anime_id: animeId,
-        user_id: userId
-      }, function (err, docs) {
-        if(docs){
-          resolve();
-        }else{
-          reject(404);
+          AnimeModel.findOneAndDelete({
+            anime_id: animeId,
+            user_id: userId,
+          }, function(err, docs) {
+            if (docs) {
+              resolve();
+            } else {
+              reject(404);
+            }
+          });
         }
       });
-    }});
     });
   }
 
   static postUserNewAnime(anime, userToken) {
-    return new Promise(function (resolve, reject) {
-      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-      body = JSON.parse(body)  
-      if (('auth' in body && !body.auth) || body._id != anime.user_id) {
-          reject(401)
+    return new Promise(function(resolve, reject) {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken}}, (err, response, body) => {
+        body = JSON.parse(body);
+        if (('auth' in body && !body.auth) || body._id != anime.user_id) {
+          reject(401);
         } else {
-      AnimeModel.create({
-        'anime_id': anime.anime_id,
-        'user_id': anime.user_id,
-        'status': anime.status,
-        'rating': anime.rating,
-      }, function () {
-        resolve();
+          AnimeModel.create({
+            'anime_id': anime.anime_id,
+            'user_id': anime.user_id,
+            'status': anime.status,
+            'rating': anime.rating,
+          }, function() {
+            resolve();
+          });
+        }
       });
-    }});
-  });
+    });
   }
 
   static updateUserAnimeById(anime, userToken) {
-    return new Promise(function (resolve, reject) {
-      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, { headers: { 'x-access-token': userToken } }, (err, response, body) => {
-      body = JSON.parse(body)  
-      if (('auth' in body && !body.auth) || body._id != anime.user_id) {
-          reject(401)
+    return new Promise(function(resolve, reject) {
+      request.get(`https://animea-gateway.herokuapp.com/auth/api/v1/auth/me`, {headers: {'x-access-token': userToken}}, (err, response, body) => {
+        body = JSON.parse(body);
+        if (('auth' in body && !body.auth) || body._id != anime.user_id) {
+          reject(401);
         } else {
-      AnimeModel.findOneAndUpdate({
-        anime_id: anime.anime_id,
-        user_id: anime.user_id
-      }, anime, function (err, docs) {
-        if(docs){
-          resolve();
-        }else{
-          reject(404);
+          AnimeModel.findOneAndUpdate({
+            anime_id: anime.anime_id,
+            user_id: anime.user_id,
+          }, anime, function(err, docs) {
+            if (docs) {
+              resolve();
+            } else {
+              reject(404);
+            }
+          });
         }
       });
-    }});
     });
   }
 }
